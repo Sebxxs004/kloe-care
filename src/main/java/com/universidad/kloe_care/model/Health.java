@@ -75,4 +75,14 @@ public class Health {
         this.observations = observations;
     }
 
+    public String toString() {
+        return "Health{" +
+                "temperature=" + temperature +
+                ", weight=" + weight +
+                ", symptoms=" + symptoms +
+                ", vaccines=" + vaccines +
+                ", medications=" + medications +
+                ", observations='" + observations + '\'' +
+                '}';
+    }
 }

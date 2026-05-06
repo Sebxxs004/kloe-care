@@ -74,4 +74,15 @@ public class Medication {
     public void setNotes(String notes) {
         this.notes = notes;
     }
+
+    public String toString() {
+        return "Medication{" +
+                "name='" + name + '\'' +
+                ", dosage='" + dosage + '\'' +
+                ", frequency='" + frequency + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", notes='" + notes + '\'' +
+                '}';
+    }
 }

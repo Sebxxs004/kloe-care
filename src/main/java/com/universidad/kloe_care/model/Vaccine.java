@@ -65,4 +65,13 @@ public class Vaccine {
         this.notes = notes;
     }
 
+    public String toString() {
+        return "Vaccine{" +
+                "name='" + name + '\'' +
+                ", laboratory='" + laboratory + '\'' +
+                ", appliedAt=" + appliedAt +
+                ", nextDoseAt=" + nextDoseAt +
+                ", notes='" + notes + '\'' +
+                '}';
+    }
 }

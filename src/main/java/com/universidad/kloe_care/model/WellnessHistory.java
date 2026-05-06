@@ -64,4 +64,14 @@ public class WellnessHistory {
     public void setPet(Pet pet) {
         this.pet = pet;
     }
+
+    public String toString() {
+        return "WellnessHistory{" +
+                "health=" + health +
+                ", feeding=" + feeding +
+                ", activityLogs=" + activityLogs +
+                ", generalNotes='" + generalNotes + '\'' +
+                ", pet=" + pet +
+                '}';
+    }
 }
