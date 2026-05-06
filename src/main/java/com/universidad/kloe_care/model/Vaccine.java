@@ -4,12 +4,14 @@ import java.util.Date;
 
 public class Vaccine {
 
+    // Información sobre vacunas administradas a la mascota (atributos comunes)
     private String name;
     private String laboratory;
     private Date appliedAt;
     private Date nextDoseAt;
     private String notes;
 
+    // Constructor con todos los atributos
     public Vaccine(String name, String laboratory, Date appliedAt, Date nextDoseAt, String notes) {
         this.name = name;
         this.laboratory = laboratory;
@@ -18,9 +20,11 @@ public class Vaccine {
         this.notes = notes;
     }
 
+    // Constructor vacío para facilitar la creación de objetos sin necesidad de proporcionar todos los datos
     public Vaccine() {
     }
 
+    // Getters y Setters para cada atributo
     public String getName() {
         return name;
     }

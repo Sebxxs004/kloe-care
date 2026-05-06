@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Health {
 
+    // Información de salud general (Atributos comunes)
     private float temperature;
     private float weight;
     private List<String> symptoms;
@@ -11,6 +12,7 @@ public class Health {
     private List<Medication> medications;
     private String observations;
 
+    // Constructor con todos los atributos
     public Health(float temperature, float weight, List<String> symptoms, List<Vaccine> vaccines, List<Medication> medications, String observations) {
         this.temperature = temperature;
         this.weight = weight;
@@ -20,9 +22,11 @@ public class Health {
         this.observations = observations;
     }
 
+    // Constructor vacío para facilitar la creación de objetos sin necesidad de proporcionar todos los datos
     public Health() {
     }
 
+    // Getters y Setters para cada atributo
     public float getTemperature() {
         return temperature;
     }

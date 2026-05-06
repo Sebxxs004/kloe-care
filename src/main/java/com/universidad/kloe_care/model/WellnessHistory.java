@@ -3,12 +3,15 @@ package com.universidad.kloe_care.model;
 import java.util.List;
 
 public class WellnessHistory {
+
+    // Historial de bienestar de la mascota, que incluye salud, alimentación y actividad física (atributos comunes)
     private List<Health> health;
     private List<Feeding> feeding;
     private List<Activity> activity;
     private String generalNotes;
     private Pet pet;
 
+    // Constructor con todos los atributos  
     public WellnessHistory(List<Health> health, List<Feeding> feeding, List<Activity> activityLogs, String generalNotes, Pet pet) {
         this.health = health;
         this.feeding = feeding;
@@ -17,9 +20,11 @@ public class WellnessHistory {
         this.pet = pet;
     }
 
+    // Constructor vacío para facilitar la creación de objetos sin necesidad de proporcionar todos los datos
     public WellnessHistory() {
     }
 
+    // Getters y Setters para cada atributo
     public List<Health> getHealth() {
         return health;
     }

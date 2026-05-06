@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class Medication {
 
+    // Información sobre medicamentos administrados a la mascota (atributos comunes)
     private String name;
     private String dosage;
     private String frequency;
@@ -11,6 +12,7 @@ public class Medication {
     private Date endDate;
     private String notes;
 
+    // Constructor con todos los atributos
     public Medication(String name, String dosage, String frequency, Date startDate, Date endDate, String notes) {
         this.name = name;
         this.dosage = dosage;
@@ -20,9 +22,11 @@ public class Medication {
         this.notes = notes;
     }
 
+    // Constructor vacío para facilitar la creación de objetos sin necesidad de proporcionar todos los datos
     public Medication() {
     }
 
+    // Getters y Setters para cada atributo
     public String getName() {
         return name;
     }
