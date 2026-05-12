@@ -1,7 +1,6 @@
 package com.universidad.kloe_care.controller;
 
 import com.universidad.kloe_care.model.Feeding;
-import com.universidad.kloe_care.service.CrudItem;
 import com.universidad.kloe_care.service.FeedingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/feedings")
@@ -26,27 +26,27 @@ public class FeedingController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CrudItem<Feeding>>> doGet() {
+    public ResponseEntity<List<Feeding>> doGet() {
         return ResponseEntity.ok(feedingService.findAllFeedings());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CrudItem<Feeding>> doGet(@PathVariable Long id) {
+    public ResponseEntity<Feeding> doGet(@PathVariable UUID id) {
         return feedingService.findFeedingById(id);
     }
 
     @PostMapping
-    public ResponseEntity<CrudItem<Feeding>> doPost(@RequestBody Feeding feeding) {
+    public ResponseEntity<Feeding> doPost(@RequestBody Feeding feeding) {
         return feedingService.createFeeding(feeding);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CrudItem<Feeding>> doPut(@PathVariable Long id, @RequestBody Feeding feeding) {
+    public ResponseEntity<Feeding> doPut(@PathVariable UUID id, @RequestBody Feeding feeding) {
         return feedingService.updateFeeding(id, feeding);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> doDelete(@PathVariable Long id) {
+    public ResponseEntity<Void> doDelete(@PathVariable UUID id) {
         return feedingService.deleteFeeding(id);
     }
 }

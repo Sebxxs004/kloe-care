@@ -1,10 +1,24 @@
 package com.universidad.kloe_care.model;
 
-import java.util.Date;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import java.util.Date;
+import java.util.UUID;
+
+@Entity
+@Table(name = "medications")
 public class Medication {
 
-    // Información sobre medicamentos administrados a la mascota (atributos comunes)
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    private UUID id;
+
     private String name;
     private String dosage;
     private String frequency;
@@ -12,72 +26,34 @@ public class Medication {
     private Date endDate;
     private String notes;
 
-    // Constructor con todos los atributos
-    public Medication(String name, String dosage, String frequency, Date startDate, Date endDate, String notes) {
-        this.name = name;
-        this.dosage = dosage;
-        this.frequency = frequency;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.notes = notes;
-    }
+    public Medication() {}
 
-    // Constructor vacío para facilitar la creación de objetos sin necesidad de proporcionar todos los datos
-    public Medication() {
-    }
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
 
-    // Getters y Setters para cada atributo
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getDosage() { return dosage; }
+    public void setDosage(String dosage) { this.dosage = dosage; }
 
-    public String getDosage() {
-        return dosage;
-    }
+    public String getFrequency() { return frequency; }
+    public void setFrequency(String frequency) { this.frequency = frequency; }
 
-    public void setDosage(String dosage) {
-        this.dosage = dosage;
-    }
+    public Date getStartDate() { return startDate; }
+    public void setStartDate(Date startDate) { this.startDate = startDate; }
 
-    public String getFrequency() {
-        return frequency;
-    }
+    public Date getEndDate() { return endDate; }
+    public void setEndDate(Date endDate) { this.endDate = endDate; }
 
-    public void setFrequency(String frequency) {
-        this.frequency = frequency;
-    }
+    public String getNotes() { return notes; }
+    public void setNotes(String notes) { this.notes = notes; }
 
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
+    @Override
     public String toString() {
         return "Medication{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", dosage='" + dosage + '\'' +
                 ", frequency='" + frequency + '\'' +
                 ", startDate=" + startDate +

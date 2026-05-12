@@ -1,7 +1,6 @@
 package com.universidad.kloe_care.controller;
 
 import com.universidad.kloe_care.model.Health;
-import com.universidad.kloe_care.service.CrudItem;
 import com.universidad.kloe_care.service.HealthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/health-records")
@@ -26,27 +26,27 @@ public class HealthController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CrudItem<Health>>> doGet() {
-        return ResponseEntity.ok(healthService.findAllHealthRecords());
+    public ResponseEntity<List<Health>> doGet() {
+        return ResponseEntity.ok(healthService.findAllHealths());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CrudItem<Health>> doGet(@PathVariable Long id) {
-        return healthService.findHealthRecordById(id);
+    public ResponseEntity<Health> doGet(@PathVariable UUID id) {
+        return healthService.findHealthById(id);
     }
 
     @PostMapping
-    public ResponseEntity<CrudItem<Health>> doPost(@RequestBody Health health) {
-        return healthService.createHealthRecord(health);
+    public ResponseEntity<Health> doPost(@RequestBody Health health) {
+        return healthService.createHealth(health);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CrudItem<Health>> doPut(@PathVariable Long id, @RequestBody Health health) {
-        return healthService.updateHealthRecord(id, health);
+    public ResponseEntity<Health> doPut(@PathVariable UUID id, @RequestBody Health health) {
+        return healthService.updateHealth(id, health);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> doDelete(@PathVariable Long id) {
-        return healthService.deleteHealthRecord(id);
+    public ResponseEntity<Void> doDelete(@PathVariable UUID id) {
+        return healthService.deleteHealth(id);
     }
 }

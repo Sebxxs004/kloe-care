@@ -1,10 +1,33 @@
 package com.universidad.kloe_care.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
+
+import java.util.UUID;
+
+@Entity
+@Table(name = "users")
 public class User {
 
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    private UUID id;
+
+    @Column(name = "full_name", nullable = false)
     private String fullName;
+
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false)
     private String password;
+
+    @Column(name = "phone_number")
     private String phoneNumber;
 
     public User() {
@@ -15,6 +38,14 @@ public class User {
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getFullName() {
@@ -52,9 +83,9 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "fullName='" + fullName + '\'' +
+                "id=" + id +
+                ", fullName='" + fullName + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
     }

@@ -3,6 +3,7 @@ package com.universidad.kloe_care.controller;
 import com.universidad.kloe_care.model.Medication;
 import com.universidad.kloe_care.service.CrudItem;
 import com.universidad.kloe_care.service.MedicationService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/medications")
@@ -26,27 +28,27 @@ public class MedicationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CrudItem<Medication>>> doGet() {
+    public ResponseEntity<List<Medication>> doGet() {
         return ResponseEntity.ok(medicationService.findAllMedications());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CrudItem<Medication>> doGet(@PathVariable Long id) {
+    public ResponseEntity<Medication> doGet(@PathVariable UUID id) {
         return medicationService.findMedicationById(id);
     }
 
     @PostMapping
-    public ResponseEntity<CrudItem<Medication>> doPost(@RequestBody Medication medication) {
+    public ResponseEntity<Medication> doPost(@RequestBody Medication medication) {
         return medicationService.createMedication(medication);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CrudItem<Medication>> doPut(@PathVariable Long id, @RequestBody Medication medication) {
+    public ResponseEntity<Medication> doPut(@PathVariable UUID id, @RequestBody Medication medication) {
         return medicationService.updateMedication(id, medication);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> doDelete(@PathVariable Long id) {
+    public ResponseEntity<Void> doDelete(@PathVariable UUID id) {
         return medicationService.deleteMedication(id);
     }
 }

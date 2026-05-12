@@ -1,29 +1,37 @@
 package com.universidad.kloe_care.model;
-import java.util.List;
 
-/**
- * Representa el registro de alimentación de una mascota.
- */
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
+import java.util.List;
+import java.util.UUID;
+
+@Entity
+@Table(name = "feedings")
 public class Feeding {
 
-    private List<String> foodType;  // Tipos de alimento (ej: croquetas, pollo)
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    private UUID id;
+
+    @ElementCollection
+    private List<String> foodType;
     private String foodBrand;
-    private double amount;          // Cantidad en gramos o ml
-    private String schedule;        // Horario de alimentación (ej: "8:00 AM")
-    private int frequency;          // Veces al día que se alimenta
+    private double amount;
+    private String schedule;
+    private int frequency;
     private String observations;
 
     public Feeding() {}
 
-    public Feeding(List<String> foodType, String foodBrand, double amount,
-        String schedule, int frequency, String observations) {
-        this.foodType = foodType;
-        this.foodBrand = foodBrand;
-        this.amount = amount;
-        this.schedule = schedule;
-        this.frequency = frequency;
-        this.observations = observations;
-    }
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
 
     public List<String> getFoodType() { return foodType; }
     public void setFoodType(List<String> foodType) { this.foodType = foodType; }
@@ -46,7 +54,8 @@ public class Feeding {
     @Override
     public String toString() {
         return "Feeding{" +
-                "foodType=" + foodType +
+                "id=" + id +
+                ", foodType=" + foodType +
                 ", foodBrand='" + foodBrand + '\'' +
                 ", amount=" + amount +
                 ", schedule='" + schedule + '\'' +

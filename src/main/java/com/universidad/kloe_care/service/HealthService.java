@@ -1,31 +1,46 @@
 package com.universidad.kloe_care.service;
 
-import com.universidad.kloe_care.model.Health;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.universidad.kloe_care.model.Health;
+import com.universidad.kloe_care.repository.HealthRepository;
 
 @Service
-public class HealthService extends AbstractInMemoryCrudService<Health> {
+public class HealthService {
 
-    public List<CrudItem<Health>> findAllHealthRecords() {
-        return findAll();
+    private final HealthRepository healthRepository;
+
+    public HealthService(HealthRepository healthRepository) {
+        this.healthRepository = healthRepository;
     }
 
-    public ResponseEntity<CrudItem<Health>> findHealthRecordById(Long id) {
-        return findById(id);
+    public List<Health> findAllHealths() { return healthRepository.findAll(); }
+
+    public ResponseEntity<Health> findHealthById(UUID id) {
+        Optional<Health> h = healthRepository.findById(id);
+        return h.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    public ResponseEntity<CrudItem<Health>> createHealthRecord(Health health) {
-        return save(health);
+    public ResponseEntity<Health> createHealth(Health health) {
+        Health saved = healthRepository.save(health);
+        return ResponseEntity.status(201).body(saved);
     }
 
-    public ResponseEntity<CrudItem<Health>> updateHealthRecord(Long id, Health health) {
-        return update(id, health);
+    public ResponseEntity<Health> updateHealth(UUID id, Health health) {
+        if (!healthRepository.existsById(id)) return ResponseEntity.notFound().build();
+        health.setId(id);
+        Health saved = healthRepository.save(health);
+        return ResponseEntity.ok(saved);
     }
 
-    public ResponseEntity<Void> deleteHealthRecord(Long id) {
-        return delete(id);
+    public ResponseEntity<Void> deleteHealth(UUID id) {
+        if (!healthRepository.existsById(id)) return ResponseEntity.notFound().build();
+        healthRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,78 +1,66 @@
 package com.universidad.kloe_care.model;
 
-import java.util.List;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import java.util.List;
+import java.util.UUID;
+
+@Entity
+@Table(name = "wellness_histories")
 public class WellnessHistory {
 
-    // Historial de bienestar de la mascota, que incluye salud, alimentación y actividad física (atributos comunes)
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    private UUID id;
+
+    @Transient
     private List<Health> health;
+
+    @Transient
     private List<Feeding> feeding;
+
+    @Transient
     private List<Activity> activity;
+
     private String generalNotes;
+
+    @ManyToOne
     private Pet pet;
 
-    // Constructor con todos los atributos  
-    public WellnessHistory(List<Health> health, List<Feeding> feeding, List<Activity> activity, String generalNotes, Pet pet) {
-        this.health = health;
-        this.feeding = feeding;
-        this.activity = activity;
-        this.generalNotes = generalNotes;
-        this.pet = pet;
-    }
+    public WellnessHistory() {}
 
-    // Constructor vacío para facilitar la creación de objetos sin necesidad de proporcionar todos los datos
-    public WellnessHistory() {
-    }
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
 
-    // Getters y Setters para cada atributo
-    public List<Health> getHealth() {
-        return health;
-    }
+    public List<Health> getHealth() { return health; }
+    public void setHealth(List<Health> health) { this.health = health; }
 
-    public void setHealth(List<Health> health) {
-        this.health = health;
-    }
+    public List<Feeding> getFeeding() { return feeding; }
+    public void setFeeding(List<Feeding> feeding) { this.feeding = feeding; }
 
-    public List<Feeding> getFeeding() {
-        return feeding;
-    }
+    public List<Activity> getActivity() { return activity; }
+    public void setActivity(List<Activity> activity) { this.activity = activity; }
 
-    public void setFeeding(List<Feeding> feeding) {
-        this.feeding = feeding;
-    }
+    public String getGeneralNotes() { return generalNotes; }
+    public void setGeneralNotes(String generalNotes) { this.generalNotes = generalNotes; }
 
-    public List<Activity> getActivity() {
-        return activity;
-    }
-
-    public void setActivity(List<Activity> activity) {
-        this.activity = activity;
-    }
-
-    public String getGeneralNotes() {
-        return generalNotes;
-    }
-
-    public void setGeneralNotes(String generalNotes) {
-        this.generalNotes = generalNotes;
-    }
-
-    public Pet getPet() {
-        return pet;
-    }
-
-    public void setPet(Pet pet) {
-        this.pet = pet;
-    }
+    public Pet getPet() { return pet; }
+    public void setPet(Pet pet) { this.pet = pet; }
 
     @Override
     public String toString() {
         return "WellnessHistory{" +
-                "health=" + health +
-                ", feeding=" + feeding +
-                ", activity=" + activity +
+                "id=" + id +
                 ", generalNotes='" + generalNotes + '\'' +
-                ", pet=" + pet +
+                ", pet=" + (pet != null ? pet.getId() : null) +
                 '}';
     }
 }

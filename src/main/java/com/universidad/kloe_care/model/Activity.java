@@ -1,8 +1,22 @@
 package com.universidad.kloe_care.model;
-/**
- * Representa una actividad física registrada para una mascota.
- */
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
+import java.util.UUID;
+
+@Entity
+@Table(name = "activities")
 public class Activity {
+
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    private UUID id;
 
     private String activityType;  // Ej: caminata, juego
     private String duration;      // Ej: "30 minutos", "1 hora"
@@ -10,11 +24,8 @@ public class Activity {
 
     public Activity() {}
 
-    public Activity(String activityType, String duration, String observations) {
-        this.activityType = activityType;
-        this.duration = duration;
-        this.observations = observations;
-    }
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
 
     public String getActivityType() { return activityType; }
     public void setActivityType(String activityType) { this.activityType = activityType; }
@@ -28,7 +39,8 @@ public class Activity {
     @Override
     public String toString() {
         return "Activity{" +
-                "activityType='" + activityType + '\'' +
+                "id=" + id +
+                ", activityType='" + activityType + '\'' +
                 ", duration='" + duration + '\'' +
                 ", observations='" + observations + '\'' +
                 '}';

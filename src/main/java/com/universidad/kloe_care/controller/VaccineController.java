@@ -1,7 +1,6 @@
 package com.universidad.kloe_care.controller;
 
 import com.universidad.kloe_care.model.Vaccine;
-import com.universidad.kloe_care.service.CrudItem;
 import com.universidad.kloe_care.service.VaccineService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/vaccines")
@@ -26,27 +26,27 @@ public class VaccineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CrudItem<Vaccine>>> doGet() {
+    public ResponseEntity<List<Vaccine>> doGet() {
         return ResponseEntity.ok(vaccineService.findAllVaccines());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CrudItem<Vaccine>> doGet(@PathVariable Long id) {
+    public ResponseEntity<Vaccine> doGet(@PathVariable UUID id) {
         return vaccineService.findVaccineById(id);
     }
 
     @PostMapping
-    public ResponseEntity<CrudItem<Vaccine>> doPost(@RequestBody Vaccine vaccine) {
+    public ResponseEntity<Vaccine> doPost(@RequestBody Vaccine vaccine) {
         return vaccineService.createVaccine(vaccine);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CrudItem<Vaccine>> doPut(@PathVariable Long id, @RequestBody Vaccine vaccine) {
+    public ResponseEntity<Vaccine> doPut(@PathVariable UUID id, @RequestBody Vaccine vaccine) {
         return vaccineService.updateVaccine(id, vaccine);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> doDelete(@PathVariable Long id) {
+    public ResponseEntity<Void> doDelete(@PathVariable UUID id) {
         return vaccineService.deleteVaccine(id);
     }
 }
