@@ -12,10 +12,10 @@ public class WellnessHistory {
     private Pet pet;
 
     // Constructor con todos los atributos  
-    public WellnessHistory(List<Health> health, List<Feeding> feeding, List<Activity> activityLogs, String generalNotes, Pet pet) {
+    public WellnessHistory(List<Health> health, List<Feeding> feeding, List<Activity> activity, String generalNotes, Pet pet) {
         this.health = health;
         this.feeding = feeding;
-        this.activityLogs = activityLogs;
+        this.activity = activity;
         this.generalNotes = generalNotes;
         this.pet = pet;
     }
@@ -65,11 +65,12 @@ public class WellnessHistory {
         this.pet = pet;
     }
 
+    @Override
     public String toString() {
         return "WellnessHistory{" +
                 "health=" + health +
                 ", feeding=" + feeding +
-                ", activityLogs=" + activityLogs +
+                ", activity=" + activity +
                 ", generalNotes='" + generalNotes + '\'' +
                 ", pet=" + pet +
                 '}';
