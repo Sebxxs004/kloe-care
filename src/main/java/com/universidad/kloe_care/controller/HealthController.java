@@ -2,6 +2,7 @@ package com.universidad.kloe_care.controller;
 
 import com.universidad.kloe_care.model.Health;
 import com.universidad.kloe_care.service.HealthService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,12 +37,12 @@ public class HealthController {
     }
 
     @PostMapping
-    public ResponseEntity<Health> doPost(@RequestBody Health health) {
+    public ResponseEntity<Health> doPost(@Valid @RequestBody Health health) {
         return healthService.createHealth(health);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Health> doPut(@PathVariable UUID id, @RequestBody Health health) {
+    public ResponseEntity<Health> doPut(@PathVariable UUID id, @Valid @RequestBody Health health) {
         return healthService.updateHealth(id, health);
     }
 
