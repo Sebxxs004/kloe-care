@@ -2,6 +2,7 @@ package com.universidad.kloe_care.controller;
 
 import com.universidad.kloe_care.model.Pet;
 import com.universidad.kloe_care.service.PetService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,12 +37,12 @@ public class PetController {
     }
 
     @PostMapping
-    public ResponseEntity<Pet> doPost(@RequestBody Pet pet) {
+    public ResponseEntity<Pet> doPost(@Valid @RequestBody Pet pet) {
         return petService.createPet(pet);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Pet> doPut(@PathVariable UUID id, @RequestBody Pet pet) {
+    public ResponseEntity<Pet> doPut(@PathVariable UUID id, @Valid @RequestBody Pet pet) {
         return petService.updatePet(id, pet);
     }
 

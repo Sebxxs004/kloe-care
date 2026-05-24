@@ -3,15 +3,16 @@ package com.universidad.kloe_care.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.ElementCollection;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 
-import org.hibernate.annotations.GenericGenerator;
-
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -19,61 +20,125 @@ import java.util.UUID;
 public class Pet {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(nullable = false)
+    @NotBlank(message = "El nombre de la mascota es obligatorio")
     private String name;
+
+    @Column(nullable = false)
+    @NotBlank(message = "La especie es obligatoria")
     private String species;
+
+    @Column(nullable = false)
+    @NotBlank(message = "La raza es obligatoria")
     private String breed;
+
+    @PositiveOrZero(message = "La edad no puede ser negativa")
+    private int age;
+
+    @PositiveOrZero(message = "El peso no puede ser negativo")
     private double weight;
 
-    @ElementCollection
-    private List<String> gender;
+    @Column(nullable = false)
+    @NotBlank(message = "El sexo es obligatorio")
+    private String sex;
 
-    private Date birthDate;
+    @NotNull(message = "La fecha de nacimiento es obligatoria")
+    private LocalDate birthDate;
 
     @ManyToOne
+    @JoinColumn(name = "owner_id")
     private User owner;
 
     public Pet() {
     }
 
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
+    public UUID getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
-    public String getSpecies() { return species; }
-    public void setSpecies(String species) { this.species = species; }
+    public String getName() {
+        return name;
+    }
 
-    public String getBreed() { return breed; }
-    public void setBreed(String breed) { this.breed = breed; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public double getWeight() { return weight; }
-    public void setWeight(double weight) { this.weight = weight; }
+    public String getSpecies() {
+        return species;
+    }
 
-    public List<String> getGender() { return gender; }
-    public void setGender(List<String> gender) { this.gender = gender; }
+    public void setSpecies(String species) {
+        this.species = species;
+    }
 
-    public Date getBirthDate() { return birthDate; }
-    public void setBirthDate(Date birthDate) { this.birthDate = birthDate; }
+    public String getBreed() {
+        return breed;
+    }
 
-    public User getOwner() { return owner; }
-    public void setOwner(User owner) { this.owner = owner; }
+    public void setBreed(String breed) {
+        this.breed = breed;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
 
     @Override
     public String toString() {
-        return "Pet{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", species='" + species + '\'' +
-                ", breed='" + breed + '\'' +
-                ", weight=" + weight +
-                ", gender=" + gender +
-                ", birthDate=" + birthDate +
-                ", owner=" + (owner != null ? owner.getId() : null) +
-                '}';
+        return "Pet{"
+                + "id=" + id
+                + ", name='" + name + '\''
+                + ", species='" + species + '\''
+                + ", breed='" + breed + '\''
+                + ", age=" + age
+                + ", weight=" + weight
+                + ", sex='" + sex + '\''
+                + ", birthDate=" + birthDate
+                + ", owner=" + (owner != null ? owner.getId() : null)
+                + '}';
     }
 }
