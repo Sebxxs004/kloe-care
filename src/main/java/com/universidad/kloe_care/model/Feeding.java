@@ -1,14 +1,14 @@
 package com.universidad.kloe_care.model;
 
-import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 
-import org.hibernate.annotations.GenericGenerator;
-
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -16,51 +16,86 @@ import java.util.UUID;
 public class Feeding {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ElementCollection
-    private List<String> foodType;
-    private String foodBrand;
+    @Column(nullable = false)
+    @NotBlank(message = "El tipo de comida es obligatorio")
+    private String foodType;
+
+    @Positive(message = "La cantidad debe ser mayor que cero")
     private double amount;
+
+    @Column(nullable = false)
+    @NotBlank(message = "El horario es obligatorio")
     private String schedule;
+
+    @Positive(message = "La frecuencia debe ser mayor que cero")
     private int frequency;
-    private String observations;
 
-    public Feeding() {}
+    @Column(name = "nutritional_observations")
+    private String nutritionalObservations;
 
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
+    public Feeding() {
+    }
 
-    public List<String> getFoodType() { return foodType; }
-    public void setFoodType(List<String> foodType) { this.foodType = foodType; }
+    public UUID getId() {
+        return id;
+    }
 
-    public String getFoodBrand() { return foodBrand; }
-    public void setFoodBrand(String foodBrand) { this.foodBrand = foodBrand; }
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
-    public double getAmount() { return amount; }
-    public void setAmount(double amount) { this.amount = amount; }
+    public String getFoodType() {
+        return foodType;
+    }
 
-    public String getSchedule() { return schedule; }
-    public void setSchedule(String schedule) { this.schedule = schedule; }
+    public void setFoodType(String foodType) {
+        this.foodType = foodType;
+    }
 
-    public int getFrequency() { return frequency; }
-    public void setFrequency(int frequency) { this.frequency = frequency; }
+    public double getAmount() {
+        return amount;
+    }
 
-    public String getObservations() { return observations; }
-    public void setObservations(String observations) { this.observations = observations; }
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public String getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(String schedule) {
+        this.schedule = schedule;
+    }
+
+    public int getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(int frequency) {
+        this.frequency = frequency;
+    }
+
+    public String getNutritionalObservations() {
+        return nutritionalObservations;
+    }
+
+    public void setNutritionalObservations(String nutritionalObservations) {
+        this.nutritionalObservations = nutritionalObservations;
+    }
 
     @Override
     public String toString() {
-        return "Feeding{" +
-                "id=" + id +
-                ", foodType=" + foodType +
-                ", foodBrand='" + foodBrand + '\'' +
-                ", amount=" + amount +
-                ", schedule='" + schedule + '\'' +
-                ", frequency=" + frequency +
-                ", observations='" + observations + '\'' +
-                '}';
+        return "Feeding{"
+                + "id=" + id
+                + ", foodType='" + foodType + '\''
+                + ", amount=" + amount
+                + ", schedule='" + schedule + '\''
+                + ", frequency=" + frequency
+                + ", nutritionalObservations='" + nutritionalObservations + '\''
+                + '}';
     }
 }

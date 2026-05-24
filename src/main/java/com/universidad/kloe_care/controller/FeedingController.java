@@ -2,6 +2,7 @@ package com.universidad.kloe_care.controller;
 
 import com.universidad.kloe_care.model.Feeding;
 import com.universidad.kloe_care.service.FeedingService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,12 +37,12 @@ public class FeedingController {
     }
 
     @PostMapping
-    public ResponseEntity<Feeding> doPost(@RequestBody Feeding feeding) {
+    public ResponseEntity<Feeding> doPost(@Valid @RequestBody Feeding feeding) {
         return feedingService.createFeeding(feeding);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Feeding> doPut(@PathVariable UUID id, @RequestBody Feeding feeding) {
+    public ResponseEntity<Feeding> doPut(@PathVariable UUID id, @Valid @RequestBody Feeding feeding) {
         return feedingService.updateFeeding(id, feeding);
     }
 
