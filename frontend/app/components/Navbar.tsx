@@ -30,7 +30,9 @@ const NAV_ITEMS = [
     label: 'Comida',
     icon: (active: boolean) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 11l19-9-9 19-2-8-8-2z" fill={active ? 'currentColor' : 'none'}/>
+        <path d="M15.5 2.5c1.5 1.5 1.5 4 0 5.5l-1.8 1.8 1.4 1.4a2 2 0 0 1 0 2.8l-6.3 6.3a2 2 0 0 1-2.8 0l-2.3-2.3a2 2 0 0 1 0-2.8l6.3-6.3a2 2 0 0 1 2.8 0l1.4 1.4 1.8-1.8c-1.5-1.5-1.5-4 0-5.5z"
+          fill={active ? 'currentColor' : 'none'}/>
+        <circle cx="6" cy="18" r="1.5" fill={active ? 'white' : 'currentColor'} stroke="none"/>
       </svg>
     ),
   },

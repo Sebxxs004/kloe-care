@@ -6,6 +6,11 @@ import Link from 'next/link'
 import Navbar from '../components/Navbar'
 import RegisterPetModal from './RegisterPetModal'
 import SessionGuard from '../components/SessionGuard'
+import {
+  IconHeart, IconDrumstick, IconLightning, IconPerson, IconPaw,
+  IconHome, IconSparkles, IconChart, IconScale, IconCalendar,
+  IconMale, IconFemale, IconPlus, SPECIES_ICONS
+} from '../components/Icons'
 import './dashboard.css'
 
 interface Pet {
@@ -15,10 +20,6 @@ interface Pet {
 }
 interface WellnessRecord { id: string; general_notes: string; pet_id: string; created_at: string }
 interface Props { user: User; pets: Pet[]; initialWellness: WellnessRecord[] }
-
-const SPECIES_EMOJI: Record<string, string> = {
-  Perro: '🐶', Gato: '🐱', Conejo: '🐰', Ave: '🦜', Reptil: '🦎', Pez: '🐠', Otro: '🐾',
-}
 
 function getAge(d?: string) {
   if (!d) return null
@@ -43,7 +44,10 @@ function getRecs(pet: Pet, w: WellnessRecord[]) {
   if (!pet.birth_date) r.push('Agrega la fecha de nacimiento para alertas de vacunas.')
   if (!pet.breed)      r.push(`Indica la raza de ${pet.name} para recomendaciones personalizadas.`)
   if (w.length === 0)  r.push('Agrega un registro de salud para monitorear su bienestar.')
-  if (!r.length) { r.push(`¡Perfil completo! Considera registrar la próxima visita veterinaria.`); r.push('Mantén actualizados los datos de peso mensualmente.') }
+  if (!r.length) {
+    r.push('Perfil completo. Considera registrar la próxima visita veterinaria.')
+    r.push('Mantén actualizados los datos de peso mensualmente.')
+  }
   return r.slice(0, 3)
 }
 
@@ -52,15 +56,15 @@ function getName(u: User) {
 }
 function greeting() {
   const h = new Date().getHours()
-  return h < 12 ? '¡Buenos días' : h < 19 ? '¡Buenas tardes' : '¡Buenas noches'
+  return h < 12 ? 'Buenos días' : h < 19 ? 'Buenas tardes' : 'Buenas noches'
 }
 
 export default function DashboardClient({ user, pets: initPets, initialWellness }: Props) {
-  const [pets, setPets]           = useState<Pet[]>(initPets)
-  const [petIdx, setPetIdx]       = useState(0)
-  const [wellness]                = useState(initialWellness)
-  const [showReg, setShowReg]     = useState(initPets.length === 0)
-  const [animated, setAnimated]   = useState(0)
+  const [pets, setPets]         = useState<Pet[]>(initPets)
+  const [petIdx, setPetIdx]     = useState(0)
+  const [wellness]              = useState(initialWellness)
+  const [showReg, setShowReg]   = useState(initPets.length === 0)
+  const [animated, setAnimated] = useState(0)
 
   const pet    = pets[petIdx] || null
   const score  = pet ? calcScore(pet, wellness) : 0
@@ -89,9 +93,10 @@ export default function DashboardClient({ user, pets: initPets, initialWellness 
         {/* ── Greeting ── */}
         <header className="dash-header animate-up">
           <div>
-            <h1>{greeting()}, <span className="dash-username">{getName(user)}</span>! 👋</h1>
+            <h1>{greeting()}, <span className="dash-username">{getName(user)}</span></h1>
             <p className="dash-subtitle">
-              {pets.length === 0 ? 'Registra tu primera mascota para empezar 🐾'
+              {pets.length === 0
+                ? 'Registra tu primera mascota para empezar'
                 : `${pets.length} mascota${pets.length > 1 ? 's' : ''} registrada${pets.length > 1 ? 's' : ''}`}
             </p>
           </div>
@@ -104,7 +109,8 @@ export default function DashboardClient({ user, pets: initPets, initialWellness 
             <div className="dash-pet-selector animate-up">
               {pets.map((p, i) => (
                 <button key={p.id} className={`dash-pet-pill${i === petIdx ? ' dash-pet-pill--active' : ''}`} onClick={() => setPetIdx(i)}>
-                  {SPECIES_EMOJI[p.species] || '🐾'} {p.name}
+                  <span className="dash-pet-pill-ico">{SPECIES_ICONS[p.species] || <IconPaw size={14} />}</span>
+                  {p.name}
                 </button>
               ))}
             </div>
@@ -113,38 +119,47 @@ export default function DashboardClient({ user, pets: initPets, initialWellness 
           {/* ── 2-col grid ── */}
           <div className="dash-grid">
 
-            {/* Col 1, Row 1 — Pet card */}
+            {/* Pet card */}
             <div className="dash-area-pet dash-pet-card animate-up">
               <div className="dash-pet-card-orb dash-pet-card-orb--1" />
               <div className="dash-pet-card-orb dash-pet-card-orb--2" />
               <div className="dash-pet-card-top">
-                <span className="dash-pet-big-emoji">{SPECIES_EMOJI[pet.species] || '🐾'}</span>
+                <span className="dash-pet-big-ico">
+                  {SPECIES_ICONS[pet.species] || <IconPaw size={52} />}
+                </span>
                 <div>
                   <h2 className="dash-pet-name">{pet.name}</h2>
                   <p className="dash-pet-meta">{pet.species}{pet.breed ? ` · ${pet.breed}` : ''}</p>
                 </div>
               </div>
               <div className="dash-pet-chips">
-                {pet.gender?.[0] && <span className="dash-chip">{pet.gender[0] === 'Macho' ? '♂' : '♀'} {pet.gender[0]}</span>}
-                {pet.birth_date  && <span className="dash-chip">🎂 {getAge(pet.birth_date)}</span>}
-                {pet.weight      && <span className="dash-chip">⚖️ {pet.weight} kg</span>}
+                {pet.gender?.[0] && (
+                  <span className="dash-chip">
+                    {pet.gender[0] === 'Macho' ? <IconMale size={13} /> : <IconFemale size={13} />}
+                    {pet.gender[0]}
+                  </span>
+                )}
+                {pet.birth_date  && <span className="dash-chip"><IconCalendar size={12} /> {getAge(pet.birth_date)}</span>}
+                {pet.weight      && <span className="dash-chip"><IconScale size={12} /> {pet.weight} kg</span>}
               </div>
               <Link href="/salud" className="dash-pet-cta">
-                Ver historial de salud →
+                Ver historial de salud
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
               </Link>
             </div>
 
-            {/* Col 2, Row 1 — Wellness */}
+            {/* Wellness */}
             <div className="dash-area-wellness dash-card animate-up" style={{ animationDelay: '0.1s' }}>
               <div className="dash-card-head">
-                <span className="dash-card-icon">💚</span>
+                <span className="dash-card-icon"><IconHeart size={18} /></span>
                 <h3>Bienestar General</h3>
                 <span className="dash-score-badge" style={{ background: color }}>{scoreLabel(score)}</span>
               </div>
               {!hasData ? (
                 <div className="dash-empty-state">
-                  <p>📊 Completa el perfil de {pet.name} para ver su bienestar.</p>
-                  <Link href="/salud" className="dash-empty-link">+ Agregar datos de salud</Link>
+                  <IconChart size={32} />
+                  <p>Completa el perfil de {pet.name} para ver su bienestar.</p>
+                  <Link href="/salud" className="dash-empty-link">Agregar datos de salud</Link>
                 </div>
               ) : (<>
                 <div className="dash-wellness-row">
@@ -162,7 +177,11 @@ export default function DashboardClient({ user, pets: initPets, initialWellness 
                     { label: 'Bienestar', done: wellness.length > 0 },
                   ].map(f => (
                     <div key={f.label} className="dash-factor">
-                      <span className={`dash-factor-dot${f.done ? ' dash-factor-dot--on' : ''}`}>{f.done ? '✓' : '·'}</span>
+                      <span className={`dash-factor-dot${f.done ? ' dash-factor-dot--on' : ''}`}>
+                        {f.done
+                          ? <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                          : null}
+                      </span>
                       <span className={`dash-factor-lbl${f.done ? ' dash-factor-lbl--on' : ''}`}>{f.label}</span>
                     </div>
                   ))}
@@ -170,15 +189,16 @@ export default function DashboardClient({ user, pets: initPets, initialWellness 
               </>)}
             </div>
 
-            {/* Col 1, Row 2 — Recommendations */}
+            {/* Recommendations */}
             <div className="dash-area-recs dash-card animate-up" style={{ animationDelay: '0.15s' }}>
               <div className="dash-card-head">
-                <span className="dash-card-icon">✨</span>
+                <span className="dash-card-icon"><IconSparkles size={18} /></span>
                 <h3>Recomendaciones</h3>
               </div>
               {!hasData && wellness.length === 0 ? (
                 <div className="dash-empty-state">
-                  <p>🌟 Agrega datos de salud para recibir recomendaciones para {pet.name}.</p>
+                  <IconSparkles size={32} />
+                  <p>Agrega datos de salud para recibir recomendaciones para {pet.name}.</p>
                 </div>
               ) : (
                 <div className="dash-recs">
@@ -192,21 +212,21 @@ export default function DashboardClient({ user, pets: initPets, initialWellness 
               )}
             </div>
 
-            {/* Col 2, Row 2 — Quick Actions */}
+            {/* Quick Actions */}
             <div className="dash-area-actions dash-card animate-up" style={{ animationDelay: '0.2s' }}>
               <div className="dash-card-head">
-                <span className="dash-card-icon">⚡</span>
+                <span className="dash-card-icon"><IconLightning size={18} /></span>
                 <h3>Acciones Rápidas</h3>
               </div>
               <div className="dash-qa-grid">
                 {[
-                  { href: '/salud',     icon: '❤️', label: 'Salud',     sub: 'Registrar síntomas',    color: '#EF4444' },
-                  { href: '/comida',    icon: '🍖', label: 'Comida',    sub: 'Registrar alimentación', color: '#F97316' },
-                  { href: '/actividad', icon: '⚡', label: 'Actividad', sub: 'Registrar ejercicio',    color: '#8B5CF6' },
-                  { href: '/perfil',    icon: '👤', label: 'Perfil',    sub: 'Gestionar cuenta',       color: '#0EA5E9' },
+                  { href: '/salud',     Icon: IconHeart,     label: 'Salud',     sub: 'Registrar síntomas',    color: '#EF4444' },
+                  { href: '/comida',    Icon: IconDrumstick, label: 'Comida',    sub: 'Registrar alimentación', color: '#F97316' },
+                  { href: '/actividad', Icon: IconLightning, label: 'Actividad', sub: 'Registrar ejercicio',    color: '#8B5CF6' },
+                  { href: '/perfil',    Icon: IconPerson,    label: 'Perfil',    sub: 'Gestionar cuenta',       color: '#0EA5E9' },
                 ].map(a => (
                   <Link key={a.href} href={a.href} className="dash-qa" style={{ '--qa-c': a.color } as any}>
-                    <span className="dash-qa-ico">{a.icon}</span>
+                    <span className="dash-qa-ico" style={{ color: a.color }}><a.Icon size={22} /></span>
                     <div>
                       <p className="dash-qa-label">{a.label}</p>
                       <p className="dash-qa-sub">{a.sub}</p>
@@ -216,20 +236,24 @@ export default function DashboardClient({ user, pets: initPets, initialWellness 
               </div>
             </div>
 
-          </div>{/* end grid */}
+          </div>
 
         </>) : (!showReg && (
           <div className="dash-no-pets animate-up">
-            <div style={{ fontSize: 56, marginBottom: 16 }}>🐾</div>
-            <h2>¡Registra tu primera mascota!</h2>
+            <span className="dash-no-pets-icon"><IconPaw size={52} /></span>
+            <h2>Registra tu primera mascota</h2>
             <p>Empieza registrando a tu compañero para cuidarlo desde Kloe Care.</p>
-            <button className="dash-btn-add" onClick={() => setShowReg(true)}>+ Agregar mascota</button>
+            <button className="dash-btn-add" onClick={() => setShowReg(true)}>
+              <IconPlus size={16} /> Agregar mascota
+            </button>
           </div>
         ))}
       </main>
 
       {pet && (
-        <button className="dash-fab" onClick={() => setShowReg(true)} aria-label="Agregar mascota">+</button>
+        <button className="dash-fab" onClick={() => setShowReg(true)} aria-label="Agregar mascota">
+          <IconPlus size={24} />
+        </button>
       )}
     </div>
     </SessionGuard>

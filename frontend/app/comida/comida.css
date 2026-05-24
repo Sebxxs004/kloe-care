@@ -12,13 +12,47 @@
 }
 @media (max-width: 768px) { .cm-main { padding-top: 20px; padding-inline: 16px; } }
 
-/* ── Header ──────────────────────────────────────────────── */
-.cm-header {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+/* ── Hero banner ─────────────────────────────────────────── */
+.cm-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  background: linear-gradient(135deg, #FFEDD5 0%, #FFF7ED 100%);
+  border-radius: var(--r-xl);
+  padding: 28px 32px;
+  border: 1px solid rgba(249,115,22,0.15);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
 }
+.cm-hero-text { flex: 1; }
+.cm-hero-icon {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 14px rgba(249,115,22,0.35);
+  margin-bottom: 14px;
+}
+.cm-hero-img { flex-shrink: 0; display: flex; align-items: center; }
+@media (max-width: 600px) { .cm-hero-img { display: none; } .cm-hero { padding: 24px 20px; } }
+
+/* ── Actions row ─────────────────────────────────────────── */
+.cm-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ── Header ─────────────────────────────────────────── */
+
 .cm-title { font-size: clamp(22px, 4vw, 28px); font-weight: 800; color: var(--text-primary); margin: 0; }
 .cm-subtitle { font-size: 13.5px; color: var(--text-secondary); margin-top: 4px; }
+
+
 .cm-btn-add {
+  display: flex; align-items: center; gap: 6px;
   padding: 10px 20px; border-radius: var(--r-full);
   background: linear-gradient(135deg, var(--orange), var(--orange-dark));
   color: #fff; border: none; font-size: 13.5px; font-weight: 700;
@@ -29,8 +63,10 @@
 .cm-btn-add:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(249,115,22,0.45); }
 
 /* ── Pet selector ────────────────────────────────────────── */
-.cm-pet-selector { display: flex; flex-wrap: wrap; gap: 8px; }
+.cm-pet-selector { display: flex; flex-wrap: wrap; gap: 8px; flex: 1; }
+.cm-pet-icon { display: flex; align-items: center; }
 .cm-pet-pill {
+  display: flex; align-items: center; gap: 6px;
   padding: 7px 16px; border-radius: var(--r-full);
   border: 2px solid var(--border); background: var(--surface);
   font-size: 13px; font-weight: 600; color: var(--text-secondary);
@@ -38,6 +74,7 @@
   transition: all var(--t-fast) var(--ease);
 }
 .cm-pet-pill--active { border-color: var(--orange); background: rgba(249,115,22,0.08); color: var(--orange-dark); }
+
 
 /* ── Form wrapper ────────────────────────────────────────── */
 .cm-form-wrap {
@@ -101,13 +138,14 @@
 .cm-food-btn--active {
   border-color: var(--orange); background: rgba(249,115,22,0.07);
 }
-.cm-food-emoji  { font-size: 26px; }
+.cm-food-ico   { display: flex; align-items: center; justify-content: center; color: var(--text-secondary); }
+.cm-food-btn--active .cm-food-ico { color: var(--orange-dark); }
 .cm-food-label  { font-size: 12.5px; font-weight: 700; color: var(--text-primary); }
 .cm-food-desc   { font-size: 10.5px; color: var(--text-muted); line-height: 1.3; }
 .cm-food-check  {
   position: absolute; top: 6px; right: 8px;
   width: 18px; height: 18px; border-radius: 50%;
-  background: var(--orange); color: #fff; font-size: 10px; font-weight: 800;
+  background: var(--orange); color: #fff;
   display: flex; align-items: center; justify-content: center;
 }
 
@@ -152,7 +190,12 @@
 }
 .cm-record:hover { box-shadow: var(--shadow-md); }
 .cm-record-left { display: flex; gap: 12px; flex: 1; min-width: 0; }
-.cm-record-icons { font-size: 24px; flex-shrink: 0; padding-top: 2px; }
+.cm-record-icon-wrap {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(249,115,22,0.12); color: var(--orange-dark);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
 .cm-record-body { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
 
 .cm-record-head { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }

@@ -2,16 +2,17 @@
 
 import { useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
+import { IconPaw, IconMale, IconFemale, SPECIES_ICONS } from '../components/Icons'
 import './dashboard.css'
 
 const SPECIES_OPTIONS = [
-  { value: 'Perro',   emoji: '🐶' },
-  { value: 'Gato',    emoji: '🐱' },
-  { value: 'Conejo',  emoji: '🐰' },
-  { value: 'Ave',     emoji: '🦜' },
-  { value: 'Reptil',  emoji: '🦎' },
-  { value: 'Pez',     emoji: '🐠' },
-  { value: 'Otro',    emoji: '🐾' },
+  { value: 'Perro'  },
+  { value: 'Gato'   },
+  { value: 'Conejo' },
+  { value: 'Ave'    },
+  { value: 'Reptil' },
+  { value: 'Pez'    },
+  { value: 'Otro'   },
 ]
 
 interface Props {
@@ -102,7 +103,7 @@ export default function RegisterPetModal({ userId, onSuccess }: Props) {
 
         {/* Encabezado */}
         <div className="rp-header">
-          <div className="rp-paw">🐾</div>
+          <div className="rp-paw"><IconPaw size={36} /></div>
           <h2>¡Bienvenido a Kloe Care!</h2>
           <p>Cuéntanos sobre tu primera mascota para empezar</p>
           <div className="rp-steps">
@@ -142,7 +143,9 @@ export default function RegisterPetModal({ userId, onSuccess }: Props) {
                       className={`rp-species-btn${species === opt.value ? ' rp-species-btn--active' : ''}`}
                       onClick={() => setSpecies(opt.value)}
                     >
-                      <span className="rp-species-emoji">{opt.emoji}</span>
+                      <span className="rp-species-ico">
+                        {SPECIES_ICONS[opt.value] || <IconPaw size={24} />}
+                      </span>
                       <span>{opt.value}</span>
                     </button>
                   ))}
@@ -166,7 +169,9 @@ export default function RegisterPetModal({ userId, onSuccess }: Props) {
           {step === 2 && (
             <div className="rp-body animate-up">
               <div className="rp-pet-badge">
-                <span>{selectedSpecies?.emoji}</span>
+                <span className="rp-pet-badge-ico">
+                  {SPECIES_ICONS[species] || <IconPaw size={28} />}
+                </span>
                 <strong>{name}</strong>
               </div>
 
@@ -206,7 +211,10 @@ export default function RegisterPetModal({ userId, onSuccess }: Props) {
                         className={`rp-gender-btn${gender === g ? ' rp-gender-btn--active' : ''}`}
                         onClick={() => setGender(gender === g ? '' : g)}
                       >
-                        {g === 'Macho' ? '♂' : '♀'} {g}
+                      <>
+                        {g === 'Macho' ? <IconMale size={14} /> : <IconFemale size={14} />}
+                        {' '}{g}
+                      </>
                       </button>
                     ))}
                   </div>
@@ -240,7 +248,7 @@ export default function RegisterPetModal({ userId, onSuccess }: Props) {
                   ← Atrás
                 </button>
                 <button type="submit" className="rp-btn-submit" disabled={loading}>
-                  {loading ? <span className="rp-spinner" /> : '🐾 '}
+                  {loading ? <span className="rp-spinner" /> : <IconPaw size={16} />}
                   {loading ? 'Guardando...' : '¡Empezar!'}
                 </button>
               </div>
