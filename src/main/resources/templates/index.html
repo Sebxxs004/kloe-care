@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${appName}">Kloe Care</title>
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<header>
+    <h1 th:text="${appName}">Kloe Care</h1>
+    <nav>
+        <a href="/users-ui">Usuarios</a> |
+        <a href="/pets-ui">Mascotas</a> |
+        <a href="/health-ui">Salud</a> |
+        <a href="/feeding-ui">Alimentación</a>
+    </nav>
+</header>
+<main>
+    <p>Bienvenido al panel básico de Kloe Care. Mientras se desarrolla el frontend, estas vistas muestran enlaces y pruebas rápidas.</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "kloe-care-frontend",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test-insert": "node ./test-insert.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.36.0",
+    "dotenv": "^17.4.2",
+    "next": "13.4.7",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "25.9.1",
+    "@types/react": "19.2.15",
+    "typescript": "6.0.3"
+  }
+}

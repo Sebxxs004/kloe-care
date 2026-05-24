@@ -4,6 +4,7 @@ import com.universidad.kloe_care.dto.LoginRequest;
 import com.universidad.kloe_care.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -32,13 +33,14 @@ public class AuthService {
             return false;
         }
 
-        Optional<User> user = userService.findByEmail(request.getEmail().trim());
+        Optional<User> user = userService.findByEmail(request.getEmail().trim().toLowerCase());
         if (user.isEmpty()) {
             log.warn("Login fallido: no existe usuario para email={}", request.getEmail());
             return false;
         }
 
-        boolean passwordMatches = user.get().getPassword().equals(request.getPassword());
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        boolean passwordMatches = encoder.matches(request.getPassword(), user.get().getPassword());
         if (!passwordMatches) {
             log.warn("Login fallido: contraseña incorrecta para email={}", request.getEmail());
             return false;
