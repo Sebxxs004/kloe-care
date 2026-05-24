@@ -30,13 +30,24 @@ export default function RegisterPetModal({ userId, onSuccess }: Props) {
   const [loading, setLoading]     = useState(false)
   const [error, setError]         = useState('')
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!name.trim() || !species) {
-      setError('El nombre y la especie son obligatorios.')
+  // Paso 1: valida nombre + especie y avanza
+  function handleStep1(e?: React.FormEvent) {
+    e?.preventDefault()
+    if (!name.trim()) {
+      setError('El nombre es obligatorio.')
       return
     }
+    if (!species) {
+      setError('Selecciona la especie de tu mascota.')
+      return
+    }
+    setError('')
+    setStep(2)
+  }
 
+  // Paso 2: guarda en Supabase
+  async function handleSave(e: React.FormEvent) {
+    e.preventDefault()
     setLoading(true)
     setError('')
     const supabase = createClient()
@@ -58,12 +69,29 @@ export default function RegisterPetModal({ userId, onSuccess }: Props) {
     setLoading(false)
 
     if (dbError) {
-      console.error(dbError)
-      setError('No se pudo guardar la mascota. Verifica los permisos de la base de datos.')
+      console.error('Supabase error:', JSON.stringify(dbError, null, 2))
+      if (dbError.code === '42703') {
+        setError('La columna "auth_owner_id" no existe. Ejecuta la migración SQL en Supabase primero.')
+      } else if (dbError.code === '42501' || dbError.message?.includes('policy')) {
+        setError('Sin permisos (RLS). Ejecuta la migración SQL en Supabase para habilitar las políticas.')
+      } else if (dbError.code === '23503') {
+        setError('Error de clave foránea. Ejecuta la migración SQL en Supabase.')
+      } else {
+        setError(`Error ${dbError.code || ''}: ${dbError.message || 'No se pudo guardar la mascota.'}`)
+      }
       return
     }
 
     onSuccess(data)
+  }
+
+  // Router: el form llama al handler correcto según el paso
+  function handleFormSubmit(e: React.FormEvent) {
+    if (step === 1) {
+      handleStep1(e)
+    } else {
+      handleSave(e)
+    }
   }
 
   const selectedSpecies = SPECIES_OPTIONS.find(s => s.value === species)
@@ -84,7 +112,7 @@ export default function RegisterPetModal({ userId, onSuccess }: Props) {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} noValidate>
+        <form onSubmit={handleFormSubmit} noValidate>
 
           {/* ── Paso 1: Datos básicos ── */}
           {step === 1 && (
@@ -97,8 +125,8 @@ export default function RegisterPetModal({ userId, onSuccess }: Props) {
                   type="text"
                   placeholder="Ej: Luna, Max, Mochi..."
                   value={name}
-                  onChange={e => setName(e.target.value)}
-                  required
+                  onChange={e => { setName(e.target.value); setError('') }}
+                  onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleStep1() } }}
                   autoFocus
                 />
               </div>
@@ -122,10 +150,9 @@ export default function RegisterPetModal({ userId, onSuccess }: Props) {
               </div>
 
               <button
-                type="button"
+                type="submit"
                 className="rp-btn-next"
                 disabled={!name.trim() || !species}
-                onClick={() => { if (name.trim() && species) setStep(2) }}
               >
                 Continuar
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

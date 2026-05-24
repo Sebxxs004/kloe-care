@@ -1,0 +1,393 @@
+/* ================================================================
+   PERFIL — Kloe Care
+   ================================================================ */
+
+.pf-root {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.pf-main {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: calc(var(--nav-top-h) + 16px) 20px calc(var(--nav-bottom-h) + 32px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .pf-main { padding-top: 28px; }
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.pf-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: var(--surface);
+  border-radius: var(--r-xl);
+  padding: 24px 22px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+}
+
+.pf-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+  color: #fff;
+  font-size: 22px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(249,115,22,0.35);
+}
+
+.pf-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.pf-email {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.pf-phone {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin: 2px 0 0;
+}
+
+/* ── Accordion section ───────────────────────────────────── */
+.pf-section {
+  background: var(--surface);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.pf-section-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  text-align: left;
+  transition: background var(--t-fast) var(--ease);
+}
+
+.pf-section-toggle:hover {
+  background: var(--border-light);
+}
+
+.pf-section-icon {
+  font-size: 20px;
+}
+
+.pf-section-label {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.pf-chevron {
+  color: var(--text-muted);
+  transition: transform var(--t-base) var(--ease);
+  flex-shrink: 0;
+}
+
+.pf-section-toggle--open .pf-chevron {
+  transform: rotate(180deg);
+}
+
+.pf-section-toggle--open {
+  border-bottom: 1px solid var(--border-light);
+}
+
+/* ── Section body ────────────────────────────────────────── */
+.pf-section-body {
+  padding: 6px 0 8px;
+}
+
+.pf-divider {
+  height: 1px;
+  background: var(--border-light);
+  margin: 6px 20px;
+}
+
+/* ── Pet selector (multiple pets) ────────────────────────── */
+.pf-pet-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 20px 4px;
+}
+
+.pf-pet-pill {
+  padding: 6px 14px;
+  border-radius: var(--r-full);
+  border: 2px solid var(--border);
+  background: var(--bg);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all var(--t-fast) var(--ease);
+}
+
+.pf-pet-pill--active {
+  border-color: var(--green);
+  background: var(--green-light);
+  color: var(--green-dark);
+}
+
+/* ── Forms ───────────────────────────────────────────────── */
+.pf-form {
+  padding: 14px 20px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pf-form-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.pf-form-title svg {
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+/* Input row: input + save button side by side */
+.pf-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.pf-input-row input,
+.pf-input-stack input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  background: var(--bg);
+  outline: none;
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+  min-width: 0;
+}
+
+.pf-input-row input:focus,
+.pf-input-stack input:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+  background: var(--surface);
+}
+
+.pf-input-error {
+  border-color: #FCA5A5 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.10) !important;
+}
+
+.pf-hint-error {
+  font-size: 11.5px;
+  color: #EF4444;
+  margin: -4px 0 0;
+}
+
+/* Stack: inputs one below the other */
+.pf-input-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Password input with eye button */
+.pf-pwd-wrap {
+  position: relative;
+}
+
+.pf-pwd-wrap input {
+  width: 100%;
+  padding-right: 42px;
+}
+
+.pf-eye {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  transition: color var(--t-fast) var(--ease);
+}
+
+.pf-eye:hover { color: var(--green); }
+
+/* ── Buttons ─────────────────────────────────────────────── */
+.pf-btn-save {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  background: linear-gradient(135deg, var(--green), var(--green-dark));
+  color: #fff;
+  border: none;
+  border-radius: var(--r-md);
+  font-size: 13.5px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+  box-shadow: 0 3px 10px rgba(22, 163, 74, 0.3);
+}
+
+.pf-btn-save:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(22, 163, 74, 0.4);
+}
+
+.pf-btn-save:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pf-btn-save--full {
+  width: 100%;
+}
+
+/* Spinner */
+.pf-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2.5px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* ── Gender buttons ──────────────────────────────────────── */
+.pf-gender-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pf-gender-btn {
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  text-align: left;
+  transition: all var(--t-fast) var(--ease);
+}
+
+.pf-gender-btn:hover {
+  border-color: var(--green-light);
+  color: var(--green-dark);
+}
+
+.pf-gender-btn--active {
+  border-color: var(--green);
+  background: var(--green-light);
+  color: var(--green-dark);
+  font-weight: 700;
+}
+
+/* ── Logout button ───────────────────────────────────────── */
+.pf-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  border: 1.5px solid #FCA5A5;
+  background: #FFF5F5;
+  color: #DC2626;
+  border-radius: var(--r-xl);
+  font-size: 14.5px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all var(--t-fast) var(--ease);
+}
+
+.pf-logout:hover {
+  background: #FEE2E2;
+  border-color: #EF4444;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2);
+  transform: translateY(-1px);
+}
+
+/* ── Toast notification ──────────────────────────────────── */
+.pf-toast {
+  position: fixed;
+  bottom: calc(var(--nav-bottom-h) + 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 22px;
+  border-radius: var(--r-full);
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 300;
+  white-space: nowrap;
+  animation: slideUp 0.3s var(--ease) both;
+  box-shadow: var(--shadow-lg);
+}
+
+.pf-toast--ok {
+  background: var(--green);
+  color: #fff;
+}
+
+.pf-toast--err {
+  background: #EF4444;
+  color: #fff;
+}
+
+@media (min-width: 769px) {
+  .pf-toast {
+    bottom: 28px;
+  }
+}
