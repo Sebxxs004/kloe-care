@@ -462,3 +462,226 @@
     align-self: center;
   }
 }
+
+/* ══════════════════════════════════════════════════════════
+   AUTH PANEL — Slide animado login ↔ registro
+   ══════════════════════════════════════════════════════════ */
+.auth-panel {
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Las dos vistas se apilan usando grid */
+.auth-panel {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+}
+
+.auth-view {
+  grid-area: 1 / 1;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  width: 100%;
+}
+
+/* Vista login — por defecto visible */
+.auth-view--login {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: all;
+}
+
+.auth-view--register {
+  opacity: 0;
+  transform: translateX(40px);
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+/* Cuando el panel está en modo registro */
+.auth-panel--register .auth-view--login {
+  opacity: 0;
+  transform: translateX(-40px);
+  pointer-events: none;
+}
+
+.auth-panel--register .auth-view--register {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: all;
+  position: relative;
+}
+
+/* ── Botón de ojo para mostrar/ocultar contraseña ─────────── */
+.input-eye {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #a8a29e;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+  z-index: 2;
+}
+
+.input-eye:hover {
+  color: #f97316;
+}
+
+/* Ajuste del input cuando tiene el botón de ojo */
+.input-wrap:has(.input-eye) input {
+  padding-right: 40px;
+}
+
+/* ── register-link como botón ─────────────────────────────── */
+.register-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #16a34a;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.register-link:hover {
+  color: #15803d;
+}
+
+/* ── Alertas de formulario ────────────────────────────────── */
+.form-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 11px 14px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.45;
+  animation: fade-up 0.3s ease both;
+}
+
+.form-alert--error {
+  background: #fff1f0;
+  border: 1px solid #fca5a5;
+  color: #c0392b;
+}
+
+.form-alert--error svg {
+  flex-shrink: 0;
+  color: #ef4444;
+  margin-top: 1px;
+}
+
+.form-alert--success {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  color: #15803d;
+}
+
+.form-alert--success svg {
+  flex-shrink: 0;
+  color: #22c55e;
+  margin-top: 1px;
+}
+
+/* ── Spinner de carga en el botón ─────────────────────────── */
+.btn-spinner {
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  border: 2.5px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.btn-login--loading {
+  opacity: 0.85;
+  cursor: not-allowed;
+}
+
+/* ── Botón variante verde (registro) ──────────────────────── */
+.btn-login--green {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.38);
+}
+
+.btn-login--green:hover {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  box-shadow: 0 8px 22px rgba(22, 163, 74, 0.46);
+}
+
+.btn-login--green:active {
+  box-shadow: 0 3px 10px rgba(22, 163, 74, 0.3);
+}
+
+/* ── Indicador de fortaleza de contraseña ─────────────────── */
+.pwd-strength {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.pwd-strength-bar {
+  flex: 1;
+  height: 4px;
+  background: #e7e5e4;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.pwd-strength-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.35s ease, background-color 0.35s ease;
+}
+
+.pwd-strength-fill--weak   { background: #ef4444; }
+.pwd-strength-fill--fair   { background: #f97316; }
+.pwd-strength-fill--good   { background: #eab308; }
+.pwd-strength-fill--strong { background: #22c55e; }
+
+.pwd-strength-label {
+  font-size: 11px;
+  font-weight: 600;
+  min-width: 55px;
+  text-align: right;
+}
+
+.pwd-strength-label--weak   { color: #ef4444; }
+.pwd-strength-label--fair   { color: #f97316; }
+.pwd-strength-label--good   { color: #eab308; }
+.pwd-strength-label--strong { color: #22c55e; }
+
+/* ── Input error state ────────────────────────────────────── */
+.input-error {
+  border-color: #fca5a5 !important;
+  box-shadow: 0 0 0 3.5px rgba(239, 68, 68, 0.1) !important;
+}
+
+/* ── Label opcional ───────────────────────────────────────── */
+.label-optional {
+  font-weight: 400;
+  color: #a8a29e;
+  font-size: 11.5px;
+  margin-left: 3px;
+}
+
