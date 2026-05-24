@@ -1,22 +1,35 @@
-import Navbar from '../components/Navbar'
-import SessionGuard from '../components/SessionGuard'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/utils/supabase/server'
+import SaludClient from './SaludClient'
 
 export const metadata = { title: 'Salud — Kloe Care' }
 
-export default function SaludPage() {
+export default async function SaludPage() {
+  const supabase = await createClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
+  if (error || !user) redirect('/login')
+
+  const { data: pets } = await supabase
+    .from('pets')
+    .select('id, name, species')
+    .eq('auth_owner_id', user.id)
+    .order('created_at', { ascending: true })
+
+  const firstPet = pets?.[0]
+
+  const [healthsRes, vaccinesRes, medsRes] = await Promise.all([
+    firstPet ? supabase.from('healths').select('*').eq('pet_id', firstPet.id).order('created_at', { ascending: false }).limit(10) : { data: [] },
+    firstPet ? supabase.from('vaccines').select('*').eq('pet_id', firstPet.id).order('applied_at', { ascending: false }).limit(10) : { data: [] },
+    firstPet ? supabase.from('medications').select('*').eq('pet_id', firstPet.id).order('created_at', { ascending: false }).limit(10) : { data: [] },
+  ])
+
   return (
-    <SessionGuard>
-      <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
-        <Navbar />
-        <main style={{ maxWidth: 680, margin: '0 auto', padding: '80px 20px 100px', textAlign: 'center' }}>
-          <div style={{ fontSize: 56, marginBottom: 16 }}>❤️</div>
-          <h1 style={{ fontSize: 26, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10 }}>Salud</h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: 15 }}>
-            El módulo de salud estará disponible próximamente.<br />
-            Aquí podrás registrar temperatura, peso, síntomas y más.
-          </p>
-        </main>
-      </div>
-    </SessionGuard>
+    <SaludClient
+      user={user}
+      pets={pets || []}
+      initialHealths={healthsRes.data || []}
+      initialVaccines={vaccinesRes.data || []}
+      initialMeds={medsRes.data || []}
+    />
   )
 }

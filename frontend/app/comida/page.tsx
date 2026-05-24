@@ -1,22 +1,25 @@
-import Navbar from '../components/Navbar'
-import SessionGuard from '../components/SessionGuard'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/utils/supabase/server'
+import ComidaClient from './ComidaClient'
 
 export const metadata = { title: 'Comida — Kloe Care' }
 
-export default function ComidaPage() {
-  return (
-    <SessionGuard>
-      <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
-        <Navbar />
-        <main style={{ maxWidth: 680, margin: '0 auto', padding: '80px 20px 100px', textAlign: 'center' }}>
-          <div style={{ fontSize: 56, marginBottom: 16 }}>🍖</div>
-          <h1 style={{ fontSize: 26, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10 }}>Comida</h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: 15 }}>
-            El módulo de alimentación estará disponible próximamente.<br />
-            Podrás registrar horarios, marcas y cantidades de alimento.
-          </p>
-        </main>
-      </div>
-    </SessionGuard>
-  )
+export default async function ComidaPage() {
+  const supabase = await createClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
+  if (error || !user) redirect('/login')
+
+  const { data: pets } = await supabase
+    .from('pets')
+    .select('id, name, species')
+    .eq('auth_owner_id', user.id)
+    .order('created_at', { ascending: true })
+
+  const firstPet = pets?.[0]
+
+  const { data: feedings } = firstPet
+    ? await supabase.from('feedings').select('*').eq('pet_id', firstPet.id).order('created_at', { ascending: false }).limit(20)
+    : { data: [] }
+
+  return <ComidaClient user={user} pets={pets || []} initialFeedings={feedings || []} />
 }
