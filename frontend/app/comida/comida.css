@@ -2,44 +2,45 @@
    COMIDA — Kloe Care  (login-style split layout)
    ================================================================ */
 
-.cm-root { min-height: 100vh; background: var(--bg); }
+.cm-root { background: var(--bg); }
 
-/* ── Split container ────────────────────────────────────────── */
+/* ── Split container: fixed below navbar, fills viewport ──── */
 .cm-split {
+  position: fixed;
+  top: var(--nav-top-h);
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
-  min-height: calc(100vh - var(--nav-top-h));
-  margin-top: var(--nav-top-h);
-  padding-bottom: var(--nav-bottom-h);
+  overflow: hidden;
 }
 
 /* ── Left side (form) ───────────────────────────────────────── */
 .cm-left {
   flex: 0 0 50%;
-  display: flex;
-  flex-direction: column;
+  height: 100%;
   overflow-y: auto;
   background: #fff;
-  padding: 48px 52px 60px;
+  padding: 48px 52px 40px;
+  box-sizing: border-box;
 }
 
 .cm-left-inner {
-  max-width: 460px;
+  max-width: 440px;
   width: 100%;
 }
 
 /* ── Right side (image) ─────────────────────────────────────── */
 .cm-right {
   flex: 1;
-  position: sticky;
-  top: var(--nav-top-h);
-  height: calc(100vh - var(--nav-top-h));
+  height: 100%;
   overflow: hidden;
+  position: relative;
 }
 
 .cm-right-overlay {
-  position: relative;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: 0;
   background: linear-gradient(135deg, #FFEDD5, #FEF3C7);
 }
 
@@ -72,9 +73,14 @@
 .cm-right-content p { font-size: 15px; color: #555; line-height: 1.5; }
 
 @media (max-width: 768px) {
-  .cm-split { flex-direction: column; margin-top: 0; }
+  .cm-split {
+    position: static;
+    flex-direction: column;
+    min-height: calc(100vh - var(--nav-bottom-h));
+    overflow: visible;
+  }
   .cm-right  { display: none; }
-  .cm-left   { flex: none; padding: 28px 20px 80px; }
+  .cm-left   { flex: none; width: 100%; height: auto; overflow-y: visible; padding: 28px 20px 80px; }
   .cm-left-inner { max-width: 100%; }
 }
 

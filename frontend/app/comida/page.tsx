@@ -15,11 +15,5 @@ export default async function ComidaPage() {
     .eq('auth_owner_id', user.id)
     .order('created_at', { ascending: true })
 
-  const firstPet = pets?.[0]
-
-  const { data: feedings } = firstPet
-    ? await supabase.from('feedings').select('*').eq('pet_id', firstPet.id).order('created_at', { ascending: false }).limit(20)
-    : { data: [] }
-
-  return <ComidaClient user={user} pets={pets || []} initialFeedings={feedings || []} />
+  return <ComidaClient user={user} pets={pets || []} />
 }

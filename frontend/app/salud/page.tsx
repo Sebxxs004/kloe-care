@@ -15,21 +15,5 @@ export default async function SaludPage() {
     .eq('auth_owner_id', user.id)
     .order('created_at', { ascending: true })
 
-  const firstPet = pets?.[0]
-
-  const [healthsRes, vaccinesRes, medsRes] = await Promise.all([
-    firstPet ? supabase.from('healths').select('*').eq('pet_id', firstPet.id).order('created_at', { ascending: false }).limit(10) : { data: [] },
-    firstPet ? supabase.from('vaccines').select('*').eq('pet_id', firstPet.id).order('applied_at', { ascending: false }).limit(10) : { data: [] },
-    firstPet ? supabase.from('medications').select('*').eq('pet_id', firstPet.id).order('created_at', { ascending: false }).limit(10) : { data: [] },
-  ])
-
-  return (
-    <SaludClient
-      user={user}
-      pets={pets || []}
-      initialHealths={healthsRes.data || []}
-      initialVaccines={vaccinesRes.data || []}
-      initialMeds={medsRes.data || []}
-    />
-  )
+  return <SaludClient user={user} pets={pets || []} />
 }
