@@ -1,0 +1,151 @@
+/* ================================================================
+   NAVBAR — Kloe Care
+   Desktop: top bar horizontal
+   Mobile (≤768px): bottom bar estilo app nativa
+   ================================================================ */
+
+/* ── Top Navbar (Desktop) ─────────────────────────────────── */
+.navbar-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-light);
+  height: var(--nav-top-h);
+  animation: slideDown 0.4s var(--ease) both;
+}
+
+.navbar-top-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.navbar-brand img {
+  display: block;
+  height: 34px;
+  object-fit: contain;
+}
+
+.navbar-top-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+}
+
+.navbar-top-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: var(--r-full);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: color var(--t-fast) var(--ease),
+              background var(--t-fast) var(--ease);
+}
+
+.navbar-top-link:hover {
+  color: var(--text-primary);
+  background: var(--border-light);
+}
+
+.navbar-top-link--active {
+  color: #ffffff !important;
+  background: var(--green) !important;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.35);
+}
+
+/* ── Bottom Navbar (Mobile) ──────────────────────────────── */
+.navbar-bottom {
+  display: none; /* oculto en desktop */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border-light);
+  height: var(--nav-bottom-h);
+  padding: 0 8px;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  align-items: center;
+  justify-content: space-around;
+  animation: slideUp 0.4s var(--ease) both;
+}
+
+.navbar-bottom-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  text-decoration: none;
+  flex: 1;
+  padding: 8px 4px;
+  border-radius: var(--r-md);
+  color: var(--text-muted);
+  transition: color var(--t-fast) var(--ease),
+              transform var(--t-fast) var(--ease);
+  position: relative;
+}
+
+.navbar-bottom-item:active {
+  transform: scale(0.93);
+}
+
+.navbar-bottom-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 30px;
+  border-radius: var(--r-sm);
+  transition: background var(--t-fast) var(--ease);
+}
+
+.navbar-bottom-label {
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+}
+
+/* Item activo en mobile — estilo "pill" verde como la imagen de referencia */
+.navbar-bottom-item--active {
+  color: #ffffff;
+}
+
+.navbar-bottom-item--active .navbar-bottom-icon {
+  background: var(--green);
+  box-shadow: 0 3px 10px rgba(22, 163, 74, 0.4);
+  width: 52px;
+  height: 36px;
+}
+
+.navbar-bottom-item--active .navbar-bottom-label {
+  color: var(--green-dark);
+  font-weight: 700;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .navbar-top {
+    display: none;
+  }
+
+  .navbar-bottom {
+    display: flex;
+  }
+}

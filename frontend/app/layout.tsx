@@ -1,7 +1,10 @@
+import './globals.css'
+
 export const metadata = {
   title: 'Kloe Care — Cuidado Inteligente para tus Mascotas',
   description: 'Plataforma de gestión y cuidado de mascotas. Registra la salud, alimentación y bienestar de tu compañero.',
 }
+
 
 export default function RootLayout({
   children,
