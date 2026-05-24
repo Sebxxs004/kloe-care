@@ -1,100 +1,139 @@
 -- ================================================================
--- MIGRACIÓN 2 (v3) — Drop y recrear tablas con estructura correcta
--- Ejecutar en Supabase → SQL Editor
+-- MIGRACIÓN 2 — RLS sobre las tablas EXISTENTES del esquema real
+-- Tablas: wellness_histories, health_records, feeding_records,
+--         activities, vaccines, medications
+-- ================================================================
+-- RELACIONES:
+--   pets → wellness_histories (pet_id)
+--   wellness_histories → health_records (wellness_history_id)
+--   wellness_histories → feeding_records (wellness_history_id)
+--   wellness_histories → activities (wellness_history_id)
+--   health_records → vaccines (health_record_id)
+--   health_records → medications (health_record_id)
 -- ================================================================
 
--- 1. Eliminar tablas anteriores (si existen) con CASCADE para limpiar
---    dependencias y recrearlas correctamente con pet_id
-DROP TABLE IF EXISTS feedings    CASCADE;
-DROP TABLE IF EXISTS medications CASCADE;
-DROP TABLE IF EXISTS vaccines    CASCADE;
-DROP TABLE IF EXISTS healths     CASCADE;
+-- 1. Habilitar RLS en todas las tablas
+ALTER TABLE wellness_histories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE health_records     ENABLE ROW LEVEL SECURITY;
+ALTER TABLE feeding_records    ENABLE ROW LEVEL SECURITY;
+ALTER TABLE activities         ENABLE ROW LEVEL SECURITY;
+ALTER TABLE vaccines           ENABLE ROW LEVEL SECURITY;
+ALTER TABLE medications        ENABLE ROW LEVEL SECURITY;
 
--- 2. Crear tablas con la estructura correcta
-CREATE TABLE healths (
-  id            UUID        DEFAULT gen_random_uuid() PRIMARY KEY,
-  pet_id        UUID        NOT NULL REFERENCES pets(id) ON DELETE CASCADE,
-  temperature   NUMERIC(4,1),
-  symptoms      TEXT[]      DEFAULT '{}',
-  observations  TEXT,
-  created_at    TIMESTAMPTZ DEFAULT NOW()
-);
+-- 2. Limpiar políticas anteriores si existen
+DROP POLICY IF EXISTS "wh_select"  ON wellness_histories;
+DROP POLICY IF EXISTS "wh_insert"  ON wellness_histories;
+DROP POLICY IF EXISTS "wh_delete"  ON wellness_histories;
+DROP POLICY IF EXISTS "hr_select"  ON health_records;
+DROP POLICY IF EXISTS "hr_insert"  ON health_records;
+DROP POLICY IF EXISTS "hr_delete"  ON health_records;
+DROP POLICY IF EXISTS "fr_select"  ON feeding_records;
+DROP POLICY IF EXISTS "fr_insert"  ON feeding_records;
+DROP POLICY IF EXISTS "fr_delete"  ON feeding_records;
+DROP POLICY IF EXISTS "act_select" ON activities;
+DROP POLICY IF EXISTS "act_insert" ON activities;
+DROP POLICY IF EXISTS "act_delete" ON activities;
+DROP POLICY IF EXISTS "vac_select" ON vaccines;
+DROP POLICY IF EXISTS "vac_insert" ON vaccines;
+DROP POLICY IF EXISTS "vac_delete" ON vaccines;
+DROP POLICY IF EXISTS "med_select" ON medications;
+DROP POLICY IF EXISTS "med_insert" ON medications;
+DROP POLICY IF EXISTS "med_delete" ON medications;
 
-CREATE TABLE vaccines (
-  id            UUID        DEFAULT gen_random_uuid() PRIMARY KEY,
-  pet_id        UUID        NOT NULL REFERENCES pets(id) ON DELETE CASCADE,
-  name          VARCHAR(255) NOT NULL,
-  laboratory    VARCHAR(255),
-  applied_at    DATE        NOT NULL,
-  next_dose_at  DATE,
-  notes         TEXT,
-  created_at    TIMESTAMPTZ DEFAULT NOW()
-);
-
-CREATE TABLE medications (
-  id            UUID        DEFAULT gen_random_uuid() PRIMARY KEY,
-  pet_id        UUID        NOT NULL REFERENCES pets(id) ON DELETE CASCADE,
-  name          VARCHAR(255) NOT NULL,
-  dosage        VARCHAR(100),
-  frequency     VARCHAR(100),
-  start_date    DATE,
-  end_date      DATE,
-  notes         TEXT,
-  created_at    TIMESTAMPTZ DEFAULT NOW()
-);
-
-CREATE TABLE feedings (
-  id            UUID        DEFAULT gen_random_uuid() PRIMARY KEY,
-  pet_id        UUID        NOT NULL REFERENCES pets(id) ON DELETE CASCADE,
-  food_type     TEXT[]      DEFAULT '{}',
-  food_brand    VARCHAR(255),
-  amount        NUMERIC(8,2),
-  schedule      VARCHAR(255),
-  frequency     VARCHAR(100),
-  observations  TEXT,
-  created_at    TIMESTAMPTZ DEFAULT NOW()
-);
-
--- 3. Índices para consultas por mascota
-CREATE INDEX idx_healths_pet_id     ON healths(pet_id);
-CREATE INDEX idx_vaccines_pet_id    ON vaccines(pet_id);
-CREATE INDEX idx_medications_pet_id ON medications(pet_id);
-CREATE INDEX idx_feedings_pet_id    ON feedings(pet_id);
-
--- 4. Activar Row Level Security
-ALTER TABLE healths     ENABLE ROW LEVEL SECURITY;
-ALTER TABLE vaccines    ENABLE ROW LEVEL SECURITY;
-ALTER TABLE medications ENABLE ROW LEVEL SECURITY;
-ALTER TABLE feedings    ENABLE ROW LEVEL SECURITY;
-
--- 5. Políticas HEALTHS
-CREATE POLICY "healths_select_own" ON healths FOR SELECT USING (
-  pet_id IN (SELECT id FROM pets WHERE auth_owner_id = auth.uid()));
-CREATE POLICY "healths_insert_own" ON healths FOR INSERT WITH CHECK (
-  pet_id IN (SELECT id FROM pets WHERE auth_owner_id = auth.uid()));
-CREATE POLICY "healths_delete_own" ON healths FOR DELETE USING (
+-- 3. Políticas WELLNESS_HISTORIES
+--    Solo ve/crea wellness histories de sus propias mascotas
+CREATE POLICY "wh_select" ON wellness_histories FOR SELECT USING (
   pet_id IN (SELECT id FROM pets WHERE auth_owner_id = auth.uid()));
 
--- 6. Políticas VACCINES
-CREATE POLICY "vaccines_select_own" ON vaccines FOR SELECT USING (
-  pet_id IN (SELECT id FROM pets WHERE auth_owner_id = auth.uid()));
-CREATE POLICY "vaccines_insert_own" ON vaccines FOR INSERT WITH CHECK (
-  pet_id IN (SELECT id FROM pets WHERE auth_owner_id = auth.uid()));
-CREATE POLICY "vaccines_delete_own" ON vaccines FOR DELETE USING (
+CREATE POLICY "wh_insert" ON wellness_histories FOR INSERT WITH CHECK (
   pet_id IN (SELECT id FROM pets WHERE auth_owner_id = auth.uid()));
 
--- 7. Políticas MEDICATIONS
-CREATE POLICY "medications_select_own" ON medications FOR SELECT USING (
-  pet_id IN (SELECT id FROM pets WHERE auth_owner_id = auth.uid()));
-CREATE POLICY "medications_insert_own" ON medications FOR INSERT WITH CHECK (
-  pet_id IN (SELECT id FROM pets WHERE auth_owner_id = auth.uid()));
-CREATE POLICY "medications_delete_own" ON medications FOR DELETE USING (
+CREATE POLICY "wh_delete" ON wellness_histories FOR DELETE USING (
   pet_id IN (SELECT id FROM pets WHERE auth_owner_id = auth.uid()));
 
--- 8. Políticas FEEDINGS
-CREATE POLICY "feedings_select_own" ON feedings FOR SELECT USING (
-  pet_id IN (SELECT id FROM pets WHERE auth_owner_id = auth.uid()));
-CREATE POLICY "feedings_insert_own" ON feedings FOR INSERT WITH CHECK (
-  pet_id IN (SELECT id FROM pets WHERE auth_owner_id = auth.uid()));
-CREATE POLICY "feedings_delete_own" ON feedings FOR DELETE USING (
-  pet_id IN (SELECT id FROM pets WHERE auth_owner_id = auth.uid()));
+-- 4. Políticas HEALTH_RECORDS
+--    Solo ve/crea registros de salud de sus mascotas
+CREATE POLICY "hr_select" ON health_records FOR SELECT USING (
+  wellness_history_id IN (
+    SELECT id FROM wellness_histories WHERE pet_id IN (
+      SELECT id FROM pets WHERE auth_owner_id = auth.uid())));
+
+CREATE POLICY "hr_insert" ON health_records FOR INSERT WITH CHECK (
+  wellness_history_id IN (
+    SELECT id FROM wellness_histories WHERE pet_id IN (
+      SELECT id FROM pets WHERE auth_owner_id = auth.uid())));
+
+CREATE POLICY "hr_delete" ON health_records FOR DELETE USING (
+  wellness_history_id IN (
+    SELECT id FROM wellness_histories WHERE pet_id IN (
+      SELECT id FROM pets WHERE auth_owner_id = auth.uid())));
+
+-- 5. Políticas FEEDING_RECORDS
+CREATE POLICY "fr_select" ON feeding_records FOR SELECT USING (
+  wellness_history_id IN (
+    SELECT id FROM wellness_histories WHERE pet_id IN (
+      SELECT id FROM pets WHERE auth_owner_id = auth.uid())));
+
+CREATE POLICY "fr_insert" ON feeding_records FOR INSERT WITH CHECK (
+  wellness_history_id IN (
+    SELECT id FROM wellness_histories WHERE pet_id IN (
+      SELECT id FROM pets WHERE auth_owner_id = auth.uid())));
+
+CREATE POLICY "fr_delete" ON feeding_records FOR DELETE USING (
+  wellness_history_id IN (
+    SELECT id FROM wellness_histories WHERE pet_id IN (
+      SELECT id FROM pets WHERE auth_owner_id = auth.uid())));
+
+-- 6. Políticas ACTIVITIES
+CREATE POLICY "act_select" ON activities FOR SELECT USING (
+  wellness_history_id IN (
+    SELECT id FROM wellness_histories WHERE pet_id IN (
+      SELECT id FROM pets WHERE auth_owner_id = auth.uid())));
+
+CREATE POLICY "act_insert" ON activities FOR INSERT WITH CHECK (
+  wellness_history_id IN (
+    SELECT id FROM wellness_histories WHERE pet_id IN (
+      SELECT id FROM pets WHERE auth_owner_id = auth.uid())));
+
+CREATE POLICY "act_delete" ON activities FOR DELETE USING (
+  wellness_history_id IN (
+    SELECT id FROM wellness_histories WHERE pet_id IN (
+      SELECT id FROM pets WHERE auth_owner_id = auth.uid())));
+
+-- 7. Políticas VACCINES (enlazadas via health_record)
+CREATE POLICY "vac_select" ON vaccines FOR SELECT USING (
+  health_record_id IN (
+    SELECT id FROM health_records WHERE wellness_history_id IN (
+      SELECT id FROM wellness_histories WHERE pet_id IN (
+        SELECT id FROM pets WHERE auth_owner_id = auth.uid()))));
+
+CREATE POLICY "vac_insert" ON vaccines FOR INSERT WITH CHECK (
+  health_record_id IN (
+    SELECT id FROM health_records WHERE wellness_history_id IN (
+      SELECT id FROM wellness_histories WHERE pet_id IN (
+        SELECT id FROM pets WHERE auth_owner_id = auth.uid()))));
+
+CREATE POLICY "vac_delete" ON vaccines FOR DELETE USING (
+  health_record_id IN (
+    SELECT id FROM health_records WHERE wellness_history_id IN (
+      SELECT id FROM wellness_histories WHERE pet_id IN (
+        SELECT id FROM pets WHERE auth_owner_id = auth.uid()))));
+
+-- 8. Políticas MEDICATIONS (enlazadas via health_record)
+CREATE POLICY "med_select" ON medications FOR SELECT USING (
+  health_record_id IN (
+    SELECT id FROM health_records WHERE wellness_history_id IN (
+      SELECT id FROM wellness_histories WHERE pet_id IN (
+        SELECT id FROM pets WHERE auth_owner_id = auth.uid()))));
+
+CREATE POLICY "med_insert" ON medications FOR INSERT WITH CHECK (
+  health_record_id IN (
+    SELECT id FROM health_records WHERE wellness_history_id IN (
+      SELECT id FROM wellness_histories WHERE pet_id IN (
+        SELECT id FROM pets WHERE auth_owner_id = auth.uid()))));
+
+CREATE POLICY "med_delete" ON medications FOR DELETE USING (
+  health_record_id IN (
+    SELECT id FROM health_records WHERE wellness_history_id IN (
+      SELECT id FROM wellness_histories WHERE pet_id IN (
+        SELECT id FROM pets WHERE auth_owner_id = auth.uid()))));
