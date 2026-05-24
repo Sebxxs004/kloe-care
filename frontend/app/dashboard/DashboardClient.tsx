@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { User } from '@supabase/supabase-js'
 import Navbar from '../components/Navbar'
 import RegisterPetModal from './RegisterPetModal'
+import SessionGuard from '../components/SessionGuard'
 import './dashboard.css'
 
 /* ── Types ── */
@@ -131,6 +132,7 @@ export default function DashboardClient({ user, pets: initialPets, initialWellne
   }
 
   return (
+    <SessionGuard>
     <div className="dash-root">
       {/* Navbar */}
       <Navbar />
@@ -324,6 +326,7 @@ export default function DashboardClient({ user, pets: initialPets, initialWellne
         </button>
       )}
     </div>
+    </SessionGuard>
   )
 }
 

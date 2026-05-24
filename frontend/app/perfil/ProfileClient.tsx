@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { User } from '@supabase/supabase-js'
 import { createClient } from '@/utils/supabase/client'
 import Navbar from '../components/Navbar'
+import SessionGuard from '../components/SessionGuard'
 import './perfil.css'
 
 /* ── Types ── */
@@ -59,6 +60,7 @@ export default function ProfileClient({ user, pets }: Props) {
   }
 
   return (
+    <SessionGuard>
     <div className="pf-root">
       <Navbar />
 
@@ -166,6 +168,7 @@ export default function ProfileClient({ user, pets }: Props) {
 
       </main>
     </div>
+    </SessionGuard>
   )
 }
 
