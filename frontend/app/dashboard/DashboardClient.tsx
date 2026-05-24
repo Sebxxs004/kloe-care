@@ -86,7 +86,7 @@ export default function DashboardClient({ user, pets: initPets, initialWellness 
     <SessionGuard>
     <div className="dash-root">
       <Navbar />
-      {showReg && <RegisterPetModal userId={user.id} onSuccess={p => { setPets(v => [...v, p]); setShowReg(false) }} />}
+      {showReg && <RegisterPetModal userId={user.id} hasPets={pets.length > 0} onClose={() => setShowReg(false)} onSuccess={p => { setPets(v => [...v, p]); setShowReg(false) }} />}
 
       <main className="dash-main">
 

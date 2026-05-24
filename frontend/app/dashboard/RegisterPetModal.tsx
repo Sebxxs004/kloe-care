@@ -18,9 +18,11 @@ const SPECIES_OPTIONS = [
 interface Props {
   userId: string
   onSuccess: (pet: any) => void
+  onClose?: () => void
+  hasPets?: boolean
 }
 
-export default function RegisterPetModal({ userId, onSuccess }: Props) {
+export default function RegisterPetModal({ userId, onSuccess, onClose, hasPets }: Props) {
   const [step, setStep] = useState<1 | 2>(1)
   const [name, setName]           = useState('')
   const [species, setSpecies]     = useState('')
@@ -103,6 +105,11 @@ export default function RegisterPetModal({ userId, onSuccess }: Props) {
 
         {/* Encabezado */}
         <div className="rp-header">
+          {hasPets && onClose && (
+            <button type="button" className="rp-close" onClick={onClose} aria-label="Cerrar">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" width={18} height={18}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+            </button>
+          )}
           <div className="rp-paw"><IconPaw size={36} /></div>
           <h2>¡Bienvenido a Kloe Care!</h2>
           <p>Cuéntanos sobre tu primera mascota para empezar</p>

@@ -331,10 +331,21 @@
   box-shadow: var(--shadow-lg);
 }
 .rp-header {
-  text-align: center; padding: 32px 28px 20px;
+  position: relative;
+  padding: 28px 28px 20px;
+  text-align: center;
   background: linear-gradient(180deg, rgba(22,163,74,0.05) 0%, transparent 100%);
   border-bottom: 1px solid var(--border-light);
 }
+.rp-close {
+  position: absolute; top: 14px; right: 14px;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: none; background: var(--border-light);
+  color: var(--text-muted); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.rp-close:hover { background: #FEE2E2; color: #DC2626; }
 .rp-paw {
   font-size: 42px; margin-bottom: 12px;
   display: flex; align-items: center; justify-content: center;
