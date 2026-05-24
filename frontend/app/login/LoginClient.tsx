@@ -1,8 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-
-const API = 'http://localhost:8080'
+import { createClient } from '@/utils/supabase/client'
 
 interface Props {
   onSwitchToRegister: () => void
@@ -20,28 +19,29 @@ export default function LoginClient({ onSwitchToRegister }: Props) {
     setError('')
     setLoading(true)
 
-    try {
-      const res = await fetch(`${API}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-        credentials: 'include',
-      })
+    const supabase = createClient()
 
-      const text = await res.text()
+    const { error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
 
-      if (!res.ok) {
-        setError(text || 'Credenciales inválidas. Inténtalo de nuevo.')
-        return
+    if (authError) {
+      // Mensaje de error amigable en español
+      const msg = authError.message.toLowerCase()
+      if (msg.includes('invalid login') || msg.includes('invalid credentials')) {
+        setError('Correo o contraseña incorrectos. Inténtalo de nuevo.')
+      } else if (msg.includes('email not confirmed')) {
+        setError('Debes confirmar tu correo antes de iniciar sesión. Revisa tu bandeja de entrada.')
+      } else {
+        setError(authError.message)
       }
-
-      // Login exitoso → redirigir al dashboard (ajustar ruta cuando exista)
-      window.location.href = '/'
-    } catch {
-      setError('No se pudo conectar al servidor. Verifica que el backend esté activo.')
-    } finally {
       setLoading(false)
+      return
     }
+
+    // Login exitoso → redirigir al dashboard
+    window.location.href = '/'
   }
 
   return (
@@ -136,9 +136,7 @@ export default function LoginClient({ onSwitchToRegister }: Props) {
             id="btn-login"
             disabled={loading}
           >
-            {loading ? (
-              <span className="btn-spinner" />
-            ) : (
+            {loading ? <span className="btn-spinner" /> : (
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
                 <polyline points="10 17 15 12 10 7"/>
@@ -160,6 +158,7 @@ export default function LoginClient({ onSwitchToRegister }: Props) {
               Crear cuenta
             </button>
           </div>
+
         </form>
       </div>
     </>

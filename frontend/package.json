@@ -9,7 +9,8 @@
     "test-insert": "node ./test-insert.js"
   },
   "dependencies": {
-    "@supabase/supabase-js": "2.36.0",
+    "@supabase/ssr": "^0.10.3",
+    "@supabase/supabase-js": "^2.106.1",
     "dotenv": "^17.4.2",
     "next": "13.4.7",
     "react": "18.2.0",

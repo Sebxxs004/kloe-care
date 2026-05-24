@@ -1,8 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-
-const API = 'http://localhost:8080'
+import { createClient } from '@/utils/supabase/client'
 
 interface Props {
   onSwitchToLogin: () => void
@@ -30,34 +29,41 @@ export default function RegisterClient({ onSwitchToLogin }: Props) {
       setError('Las contraseñas no coinciden.')
       return
     }
-    if (password.length < 8) {
-      setError('La contraseña debe tener al menos 8 caracteres.')
+    if (password.length < 6) {
+      setError('La contraseña debe tener al menos 6 caracteres.')
       return
     }
 
     setLoading(true)
-    try {
-      const res = await fetch(`${API}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fullName, email, password, phoneNumber: phone }),
-        credentials: 'include',
-      })
+    const supabase = createClient()
 
-      const text = await res.text()
+    const { error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: fullName.trim(),
+          phone_number: phone || null,
+        },
+      },
+    })
 
-      if (!res.ok) {
-        setError(text || 'No se pudo completar el registro.')
-        return
+    if (authError) {
+      const msg = authError.message.toLowerCase()
+      if (msg.includes('already registered') || msg.includes('user already exists')) {
+        setError('Este correo ya está registrado. ¿Quieres iniciar sesión?')
+      } else if (msg.includes('password')) {
+        setError('La contraseña no cumple los requisitos mínimos de seguridad.')
+      } else {
+        setError(authError.message)
       }
-
-      setSuccess('¡Cuenta creada! Ahora puedes iniciar sesión.')
-      setTimeout(() => onSwitchToLogin(), 2000)
-    } catch {
-      setError('No se pudo conectar al servidor. Verifica que el backend esté activo.')
-    } finally {
       setLoading(false)
+      return
     }
+
+    setSuccess('¡Cuenta creada! Revisa tu correo para confirmarla y luego inicia sesión.')
+    setLoading(false)
+    setTimeout(() => onSwitchToLogin(), 3500)
   }
 
   return (
@@ -170,7 +176,7 @@ export default function RegisterClient({ onSwitchToLogin }: Props) {
               <input
                 id="reg-password"
                 type={showPwd ? 'text' : 'password'}
-                placeholder="Mínimo 8 caracteres"
+                placeholder="Mínimo 6 caracteres"
                 autoComplete="new-password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
@@ -242,9 +248,7 @@ export default function RegisterClient({ onSwitchToLogin }: Props) {
             id="btn-register"
             disabled={loading}
           >
-            {loading ? (
-              <span className="btn-spinner" />
-            ) : (
+            {loading ? <span className="btn-spinner" /> : (
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
                 <circle cx="9" cy="7" r="4"/>
@@ -261,6 +265,7 @@ export default function RegisterClient({ onSwitchToLogin }: Props) {
               ← Ya tengo cuenta
             </button>
           </div>
+
         </form>
       </div>
     </>
@@ -271,14 +276,14 @@ export default function RegisterClient({ onSwitchToLogin }: Props) {
 function getPasswordStrength(pwd: string): { level: string; label: string; percent: number } {
   if (!pwd) return { level: 'empty', label: '', percent: 0 }
   let score = 0
-  if (pwd.length >= 8)  score++
-  if (pwd.length >= 12) score++
+  if (pwd.length >= 6)  score++
+  if (pwd.length >= 10) score++
   if (/[A-Z]/.test(pwd)) score++
   if (/[0-9]/.test(pwd)) score++
   if (/[^A-Za-z0-9]/.test(pwd)) score++
 
-  if (score <= 1) return { level: 'weak',   label: 'Débil',    percent: 25  }
-  if (score <= 2) return { level: 'fair',   label: 'Regular',  percent: 50  }
-  if (score <= 3) return { level: 'good',   label: 'Buena',    percent: 75  }
+  if (score <= 1) return { level: 'weak',   label: 'Débil',     percent: 25  }
+  if (score <= 2) return { level: 'fair',   label: 'Regular',   percent: 50  }
+  if (score <= 3) return { level: 'good',   label: 'Buena',     percent: 75  }
   return              { level: 'strong', label: 'Excelente', percent: 100 }
 }
