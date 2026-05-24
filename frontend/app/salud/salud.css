@@ -9,14 +9,11 @@
 
 .sl-root { background: var(--bg); }
 
-/* ── Split container: fixed below navbar, fills viewport ──── */
+/* ── Split container: altura exacta bajo el navbar, sin scroll de página ─ */
 .sl-split {
-  position: fixed;
-  top: var(--nav-top-h);
-  left: 0;
-  right: 0;
-  bottom: 0;
   display: flex;
+  height: calc(100vh - var(--nav-top-h));
+  margin-top: var(--nav-top-h);
   overflow: hidden;
 }
 
@@ -82,13 +79,14 @@
   line-height: 1.5;
 }
 
-/* Mobile: hide image, full-width form as static flow */
+/* Mobile: columna, sin imagen, sin restricción de altura */
 @media (max-width: 768px) {
   .sl-split {
-    position: static;
     flex-direction: column;
+    height: auto;
     min-height: calc(100vh - var(--nav-bottom-h));
     overflow: visible;
+    margin-top: 0;
   }
   .sl-right  { display: none; }
   .sl-left   { flex: none; width: 100%; height: auto; overflow-y: visible; padding: 28px 20px 80px; }

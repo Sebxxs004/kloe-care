@@ -4,14 +4,11 @@
 
 .cm-root { background: var(--bg); }
 
-/* ── Split container: fixed below navbar, fills viewport ──── */
+/* ── Split container: altura exacta bajo el navbar, sin scroll de página ─ */
 .cm-split {
-  position: fixed;
-  top: var(--nav-top-h);
-  left: 0;
-  right: 0;
-  bottom: 0;
   display: flex;
+  height: calc(100vh - var(--nav-top-h));
+  margin-top: var(--nav-top-h);
   overflow: hidden;
 }
 
@@ -74,10 +71,11 @@
 
 @media (max-width: 768px) {
   .cm-split {
-    position: static;
     flex-direction: column;
+    height: auto;
     min-height: calc(100vh - var(--nav-bottom-h));
     overflow: visible;
+    margin-top: 0;
   }
   .cm-right  { display: none; }
   .cm-left   { flex: none; width: 100%; height: auto; overflow-y: visible; padding: 28px 20px 80px; }
