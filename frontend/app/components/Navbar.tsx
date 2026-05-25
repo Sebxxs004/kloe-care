@@ -46,6 +46,16 @@ const NAV_ITEMS = [
     ),
   },
   {
+    href: '/historial',
+    label: 'Historial',
+    icon: (active: boolean) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3.043.512m15.086 2.238A9.005 9.005 0 0 1 21 12a9 9 0 0 1-9 9m0 0a9 9 0 0 1-9-9m9 9c1.995 0 3.823-.212 5.633-.643m15.088-2.649A9.01 9.01 0 0 0 12 3.75a9 9 0 0 0-9 9 9 9 0 0 0 .112 1.642m18.657-5.209a.75.75 0 1 0-1.08-1.084l-.5.5a.75.75 0 0 0 1.08 1.084l.5-.5z"
+          fill={active ? 'currentColor' : 'none'}/>
+      </svg>
+    ),
+  },
+  {
     href: '/perfil',
     label: 'Perfil',
     icon: (active: boolean) => (

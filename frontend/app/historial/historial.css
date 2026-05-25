@@ -1,0 +1,310 @@
+/* ================================================================
+   HISTORIAL — Kloe Care
+   ================================================================ */
+
+.his-root { background: var(--bg); min-height: 100vh; }
+
+.his-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: calc(var(--nav-top-h) + 32px) 24px 80px;
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+.his-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+.his-title-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.his-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+  flex-shrink: 0;
+}
+
+.his-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.his-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 4px 0 0;
+}
+
+/* ── Pet selector ────────────────────────────────────────────– */
+.his-pet-selector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.his-pet-selector label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.his-pet-selector select {
+  padding: 6px 10px;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+}
+
+/* ── Tabs ────────────────────────────────────────────────────– */
+.his-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 12px;
+}
+
+.his-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.18s ease;
+  position: relative;
+}
+
+.his-tab:hover {
+  color: var(--text-primary);
+}
+
+.his-tab--active {
+  color: #6366f1;
+}
+
+.his-tab--active::after {
+  content: '';
+  position: absolute;
+  bottom: -14px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #6366f1;
+}
+
+.his-tab svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ── Content ────────────────────────────────────────────────– */
+.his-content {
+  animation: slideUp 0.3s ease-out;
+}
+
+/* ── Records ────────────────────────────────────────────────– */
+.his-records {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.his-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.his-stat {
+  padding: 16px;
+  background: linear-gradient(135deg, #f0f4ff, #f5f3ff);
+  border: 1.5px solid #e0e7ff;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.his-stat-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.his-stat-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: #6366f1;
+}
+
+.his-record-card {
+  padding: 16px;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  transition: all 0.18s ease;
+}
+
+.his-record-card:hover {
+  border-color: #6366f1;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+}
+
+.his-record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.his-record-types {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.his-record-date {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.his-record-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.his-record-grid div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.his-record-grid strong {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 12px;
+}
+
+.his-full-width {
+  grid-column: 1 / -1;
+}
+
+/* ── Empty and loading states ──────────────────────────────– */
+.his-empty,
+.his-loading {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.his-no-pet {
+  padding: 32px 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.his-no-pet a {
+  color: #6366f1;
+  font-weight: 600;
+}
+
+/* ── Toast ──────────────────────────────────────────────────– */
+.his-toast {
+  position: fixed;
+  top: calc(var(--nav-top-h) + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 99px;
+  background: #22C55E;
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+
+.his-toast--err {
+  background: #EF4444;
+}
+
+/* ── Animations ─────────────────────────────────────────────– */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Responsive ─────────────────────────────────────────────– */
+@media (max-width: 768px) {
+  .his-header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .his-pet-selector {
+    width: 100%;
+  }
+
+  .his-container {
+    padding: calc(var(--nav-bottom-h) + 24px) 16px 80px;
+  }
+
+  .his-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+  }
+
+  .his-record-grid {
+    grid-template-columns: 1fr;
+  }
+}
