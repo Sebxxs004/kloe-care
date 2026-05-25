@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { User } from '@supabase/supabase-js'
+import { createClient } from '@/utils/supabase/client'
 import Link from 'next/link'
 import Navbar from '../components/Navbar'
 import RegisterPetModal from './RegisterPetModal'
@@ -11,6 +12,12 @@ import {
   IconHome, IconSparkles, IconChart, IconScale, IconCalendar,
   IconMale, IconFemale, IconPlus, SPECIES_ICONS
 } from '../components/Icons'
+import {
+  buildPetRecommendations,
+  type DashboardRecommendationState,
+  type RecommendationIcon,
+  type RecommendationTone,
+} from './recommendations'
 import './dashboard.css'
 
 interface Pet {
@@ -20,6 +27,20 @@ interface Pet {
 }
 interface WellnessRecord { id: string; general_notes: string; pet_id: string; created_at: string }
 interface Props { user: User; pets: Pet[]; initialWellness: WellnessRecord[] }
+
+const RECOMMENDATION_TONES: Record<DashboardRecommendationState['statusTone'], string> = {
+  critical: 'var(--red, #EF4444)',
+  warning: 'var(--orange, #F97316)',
+  info: 'var(--green, #16A34A)',
+  success: 'var(--green-dark, #15803D)',
+}
+
+const RECOMMENDATION_META: Record<RecommendationTone, { label: string; color: string }> = {
+  critical: { label: 'Crítica', color: '#DC2626' },
+  warning: { label: 'Advertencia', color: '#D97706' },
+  info: { label: 'Normal', color: '#16A34A' },
+  success: { label: 'Positiva', color: '#15803D' },
+}
 
 function getAge(d?: string) {
   if (!d) return null
@@ -65,6 +86,8 @@ export default function DashboardClient({ user, pets: initPets, initialWellness 
   const [wellness]              = useState(initialWellness)
   const [showReg, setShowReg]   = useState(initPets.length === 0)
   const [animated, setAnimated] = useState(0)
+  const [recommendations, setRecommendations] = useState<DashboardRecommendationState | null>(null)
+  const [recsLoading, setRecsLoading] = useState(false)
 
   const pet    = pets[petIdx] || null
   const score  = pet ? calcScore(pet, wellness) : 0
@@ -81,6 +104,112 @@ export default function DashboardClient({ user, pets: initPets, initialWellness 
     }, 16)
     return () => clearInterval(t)
   }, [petIdx, score, pet])
+
+  useEffect(() => {
+    if (!pet) {
+      setRecommendations(null)
+      return
+    }
+
+    let cancelled = false
+
+    async function loadRecommendations() {
+      setRecsLoading(true)
+
+      const supabase = createClient()
+      const { data: wellnessHistory, error: wellnessError } = await supabase
+        .from('wellness_histories')
+        .select('id')
+        .eq('pet_id', pet.id)
+        .maybeSingle()
+
+      if (cancelled) return
+
+      if (wellnessError) {
+        console.error('Error loading wellness history for recommendations:', wellnessError)
+        setRecommendations({
+          statusLabel: 'Sin datos',
+          statusTone: 'warning',
+          summary: `No pudimos analizar las recomendaciones de ${pet.name} en este momento.`,
+          recommendations: ['Revisa la conexión con Supabase y vuelve a abrir el dashboard.'],
+        })
+        setRecsLoading(false)
+        return
+      }
+
+      if (!wellnessHistory) {
+        setRecommendations(buildPetRecommendations({
+          petName: pet.name,
+          healthRecords: [],
+          feedingRecords: [],
+          activityRecords: [],
+        }))
+        setRecsLoading(false)
+        return
+      }
+
+      const [healthResult, feedingResult, activityResult] = await Promise.all([
+        supabase
+          .from('health_records')
+          .select('id, temperature, weight, symptoms, created_at')
+          .eq('wellness_history_id', wellnessHistory.id)
+          .order('created_at', { ascending: false })
+          .limit(10),
+        supabase
+          .from('feeding_records')
+          .select('id, frequency, created_at')
+          .eq('wellness_history_id', wellnessHistory.id)
+          .order('created_at', { ascending: false })
+          .limit(10),
+        supabase
+          .from('activities')
+          .select('id, duration, created_at')
+          .eq('wellness_history_id', wellnessHistory.id)
+          .order('created_at', { ascending: false })
+          .limit(10),
+      ])
+
+      if (cancelled) return
+
+      const queryError = healthResult.error || feedingResult.error || activityResult.error
+      if (queryError) {
+        console.error('Error loading recommendation data:', queryError)
+        setRecommendations({
+          statusLabel: 'Sin datos',
+          statusTone: 'warning',
+          summary: `No pudimos leer todo el historial de ${pet.name}.`,
+          recommendations: ['Intenta recargar la página para volver a analizar las recomendaciones.'],
+        })
+        setRecsLoading(false)
+        return
+      }
+
+      setRecommendations(buildPetRecommendations({
+        petName: pet.name,
+        healthRecords: healthResult.data || [],
+        feedingRecords: feedingResult.data || [],
+        activityRecords: activityResult.data || [],
+      }))
+      setRecsLoading(false)
+    }
+
+    loadRecommendations().catch(error => {
+      console.error('Unexpected recommendation error:', error)
+      if (!cancelled) {
+        setRecommendations({
+          statusLabel: 'Sin datos',
+          statusTone: 'warning',
+          summary: `No pudimos cargar las recomendaciones de ${pet.name}.`,
+          recommendations: ['Vuelve a intentarlo en unos segundos.'],
+        })
+        setRecsLoading(false)
+      }
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [pet?.id, pet?.name])
 
   return (
     <SessionGuard>
@@ -193,22 +322,51 @@ export default function DashboardClient({ user, pets: initPets, initialWellness 
             <div className="dash-area-recs dash-card animate-up" style={{ animationDelay: '0.15s' }}>
               <div className="dash-card-head">
                 <span className="dash-card-icon"><IconSparkles size={18} /></span>
-                <h3>Recomendaciones</h3>
+                <h3>Recomendaciones automáticas</h3>
+                {recommendations && (
+                  <span
+                    className="dash-score-badge"
+                    style={{ background: RECOMMENDATION_TONES[recommendations.statusTone] }}
+                  >
+                    {recommendations.statusLabel}
+                  </span>
+                )}
               </div>
-              {!hasData && wellness.length === 0 ? (
+              {recsLoading ? (
                 <div className="dash-empty-state">
                   <IconSparkles size={32} />
-                  <p>Agrega datos de salud para recibir recomendaciones para {pet.name}.</p>
+                  <p>Analizando los registros de {pet?.name || 'tu mascota'}...</p>
+                </div>
+              ) : !recommendations || recommendations.recommendations.length === 0 ? (
+                <div className="dash-empty-state">
+                  <IconSparkles size={32} />
+                  <p>Agrega datos de salud, comida y actividad para recibir recomendaciones personalizadas.</p>
                 </div>
               ) : (
-                <div className="dash-recs">
-                  {getRecs(pet, wellness).map((r, i) => (
-                    <div key={i} className="dash-rec" style={{ animationDelay: `${0.2 + i * 0.06}s` }}>
-                      <div className="dash-rec-dot" />
-                      <p>{r}</p>
-                    </div>
-                  ))}
-                </div>
+                <>
+                  <p style={{ margin: 0, fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+                    {recommendations.summary}
+                  </p>
+                  <div className="dash-recs dash-recs--toned">
+                    {recommendations.recommendations.map((r, i) => (
+                      <div
+                        key={i}
+                        className={`dash-rec dash-rec--${r.tone}`}
+                        style={{ animationDelay: `${0.2 + i * 0.06}s` }}
+                      >
+                        <span className="dash-rec-icon" aria-hidden>
+                          {renderRecommendationIcon(r.icon)}
+                        </span>
+                        <div className="dash-rec-copy">
+                          <span className="dash-rec-label" style={{ color: RECOMMENDATION_META[r.tone].color }}>
+                            {RECOMMENDATION_META[r.tone].label}
+                          </span>
+                          <p>{r.text}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
 
@@ -258,4 +416,40 @@ export default function DashboardClient({ user, pets: initPets, initialWellness 
     </div>
     </SessionGuard>
   )
+}
+
+function renderRecommendationIcon(icon: RecommendationIcon) {
+  switch (icon) {
+    case 'critical':
+      return (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+      )
+    case 'warning':
+      return (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+          <line x1="12" y1="9" x2="12" y2="13" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+      )
+    case 'info':
+      return (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 16v-4" />
+          <path d="M12 8h.01" />
+        </svg>
+      )
+    case 'check':
+    default:
+      return (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M20 6 9 17l-5-5" />
+        </svg>
+      )
+  }
 }
