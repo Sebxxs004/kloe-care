@@ -274,3 +274,110 @@
 
 .cm-no-pet { padding: 32px 0; color: var(--text-secondary); font-size: 14px; }
 .cm-no-pet a { color: #F97316; font-weight: 600; }
+
+/* ── Tabs ────────────────────────────────────────────────────── */
+.cm-tabs {
+  display: flex; gap: 8px; margin-bottom: 24px;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 12px;
+}
+
+.cm-tab {
+  padding: 8px 16px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.18s ease;
+  position: relative;
+}
+
+.cm-tab:hover {
+  color: var(--text-primary);
+}
+
+.cm-tab--active {
+  color: #F97316;
+}
+
+.cm-tab--active::after {
+  content: '';
+  position: absolute;
+  bottom: -14px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #F97316;
+}
+
+/* ── History section ────────────────────────────────────────── */
+.cm-history {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cm-history-card {
+  padding: 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  transition: all 0.18s ease;
+}
+
+.cm-history-card:hover {
+  border-color: #F97316;
+  box-shadow: 0 4px 12px rgba(249,115,22,0.15);
+}
+
+.cm-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.cm-history-types {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.cm-history-date {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.cm-history-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.cm-history-grid div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cm-history-grid strong {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 12px;
+}
+
+/* ── Loading and empty states ────────────────────────────────── */
+.cm-loading,
+.cm-empty-state {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+}

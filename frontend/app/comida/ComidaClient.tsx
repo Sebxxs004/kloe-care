@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { createClient } from '@/utils/supabase/client'
 import Navbar from '../components/Navbar'
@@ -26,7 +26,13 @@ const FOOD_TYPES = [
   { value: 'Suplementos', desc: 'Vitaminas y extras' },
 ]
 
-const FREQUENCIES = ['1 vez al día', '2 veces al día', '3 veces al día', 'Ad libitum (libre)', 'Otro']
+const FREQUENCIES = [
+  { value: 1, label: '1 vez al día' },
+  { value: 2, label: '2 veces al día' },
+  { value: 3, label: '3 veces al día' },
+  { value: 0, label: 'Ad libitum (libre)' },
+  { value: -1, label: 'Otro' }
+]
 
 interface Pet { id: string; name: string; species: string }
 
@@ -57,6 +63,7 @@ export default function ComidaClient({ user, pets }: { user: any; pets: Pet[] })
   const [petId, setPetId]     = useState(pets[0]?.id || '')
   const [success, setSuccess] = useState<string | null>(null)
   const [toast, setToast]     = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState<'form' | 'history'>('form')
 
   const pet = pets.find(p => p.id === petId) || pets[0]
 
@@ -98,17 +105,36 @@ export default function ComidaClient({ user, pets }: { user: any; pets: Pet[] })
 
             {!pet ? (
               <div className="cm-no-pet"><p>No tienes mascotas. <a href="/dashboard">Registra una</a> primero.</p></div>
-            ) : success ? (
-              <div className="cm-success animate-up">
-                <div className="cm-success-check"><IcCheck /></div>
-                <h2>¡Guardado!</h2>
-                <p>{success}</p>
-                <button className="cm-success-btn" onClick={() => setSuccess(null)}>
-                  <IcPlus /> Agregar otro registro
-                </button>
-              </div>
             ) : (
-              <FeedingForm petId={petId} onSaved={notify} onError={m => notify(m, false)} />
+              <>
+                <div className="cm-tabs">
+                  <button
+                    className={`cm-tab${activeTab === 'form' ? ' cm-tab--active' : ''}`}
+                    onClick={() => { setActiveTab('form'); setSuccess(null) }}>
+                    Nuevo registro
+                  </button>
+                  <button
+                    className={`cm-tab${activeTab === 'history' ? ' cm-tab--active' : ''}`}
+                    onClick={() => setActiveTab('history')}>
+                    Ver historial
+                  </button>
+                </div>
+
+                {success ? (
+                  <div className="cm-success animate-up">
+                    <div className="cm-success-check"><IcCheck /></div>
+                    <h2>¡Guardado!</h2>
+                    <p>{success}</p>
+                    <button className="cm-success-btn" onClick={() => setSuccess(null)}>
+                      <IcPlus /> Agregar otro registro
+                    </button>
+                  </div>
+                ) : activeTab === 'form' ? (
+                  <FeedingForm petId={petId} onSaved={notify} onError={m => notify(m, false)} />
+                ) : (
+                  <FeedingHistory petId={petId} />
+                )}
+              </>
             )}
           </div>
         </div>
@@ -142,7 +168,7 @@ function FeedingForm({ petId, onSaved, onError }: {
   const [brand, setBrand]         = useState('')
   const [amount, setAmount]       = useState('')
   const [schedule, setSchedule]   = useState('')
-  const [frequency, setFrequency] = useState('')
+  const [frequency, setFrequency] = useState<number | ''>('')
   const [customFreq, setCustom]   = useState('')
   const [obs, setObs]             = useState('')
   const [loading, setLoading]     = useState(false)
@@ -159,13 +185,20 @@ function FeedingForm({ petId, onSaved, onError }: {
     const wellnessId = await getOrCreateWellnessHistory(petId)
     if (!wellnessId) { onError('No se pudo inicializar el historial de bienestar.'); setLoading(false); return }
 
+    let frequencyValue: number | null = null
+    if (frequency === -1) {
+      frequencyValue = customFreq.trim() ? parseInt(customFreq) : null
+    } else if (frequency !== '') {
+      frequencyValue = frequency
+    }
+
     const { error } = await createClient().from('feeding_records').insert({
       wellness_history_id: wellnessId,
       food_type:    types,
       food_brand:   brand.trim()  || null,
       amount:       amount        ? parseFloat(amount) : null,
       schedule:     schedule.trim() || null,
-      frequency:    (frequency === 'Otro' ? customFreq : frequency).trim() || null,
+      frequency:    frequencyValue,
       observations: obs.trim()   || null,
     })
     setLoading(false)
@@ -205,12 +238,12 @@ function FeedingForm({ petId, onSaved, onError }: {
         </div>
         <div className="cm-field">
           <label>Frecuencia</label>
-          <select value={frequency} onChange={e => setFrequency(e.target.value)}>
+          <select value={frequency} onChange={e => setFrequency(e.target.value ? parseInt(e.target.value) : '')}>
             <option value="">Seleccionar...</option>
-            {FREQUENCIES.map(f => <option key={f} value={f}>{f}</option>)}
+            {FREQUENCIES.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
           </select>
-          {frequency === 'Otro' && (
-            <input type="text" placeholder="Describe la frecuencia..." value={customFreq}
+          {frequency === -1 && (
+            <input type="number" placeholder="Describe la frecuencia como número..." value={customFreq}
               onChange={e => setCustom(e.target.value)} style={{ marginTop: 8 }} />
           )}
         </div>
@@ -227,5 +260,68 @@ function FeedingForm({ petId, onSaved, onError }: {
         {loading ? 'Guardando...' : 'Guardar registro de alimentación'}
       </button>
     </form>
+  )
+}
+
+/* ================================================================
+   FEEDING HISTORY
+   Displays all feeding records for a pet
+   ================================================================ */
+function FeedingHistory({ petId }: { petId: string }) {
+  const [records, setRecords] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  const supabase = createClient()
+
+  useEffect(() => {
+    (async () => {
+      const { data: wh } = await supabase
+        .from('wellness_histories')
+        .select('id')
+        .eq('pet_id', petId)
+        .maybeSingle()
+
+      if (!wh) { setLoading(false); return }
+
+      const { data } = await supabase
+        .from('feeding_records')
+        .select('*')
+        .eq('wellness_history_id', wh.id)
+        .order('created_at', { ascending: false })
+
+      setRecords(data || [])
+      setLoading(false)
+    })()
+  }, [petId, supabase])
+
+  if (loading) return <div className="cm-loading">Cargando registros...</div>
+
+  if (records.length === 0)
+    return <div className="cm-empty-state"><p>No hay registros de alimentación aún.</p></div>
+
+  return (
+    <div className="cm-history">
+      {records.map(r => (
+        <div key={r.id} className="cm-history-card">
+          <div className="cm-history-header">
+            <span className="cm-history-types">
+              {r.food_type?.join(', ') || 'Sin tipo'}
+            </span>
+            <span className="cm-history-date">
+              {new Date(r.created_at).toLocaleDateString('es-ES', {
+                day: 'numeric', month: 'short', year: 'numeric'
+              })}
+            </span>
+          </div>
+          <div className="cm-history-grid">
+            {r.food_brand && <div><strong>Marca:</strong> {r.food_brand}</div>}
+            {r.amount && <div><strong>Cantidad:</strong> {r.amount}g</div>}
+            {r.schedule && <div><strong>Horario:</strong> {r.schedule}</div>}
+            {r.frequency && <div><strong>Frecuencia:</strong> {r.frequency}</div>}
+            {r.observations && <div><strong>Observaciones:</strong> {r.observations}</div>}
+          </div>
+        </div>
+      ))}
+    </div>
   )
 }
