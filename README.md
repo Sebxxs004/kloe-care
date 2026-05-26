@@ -1,10 +1,10 @@
-# 🐾 Kloe Care
+# Kloe Care
 
 > Plataforma integral de gestión y cuidado de mascotas. Registra la salud, alimentación, vacunas, medicamentos y bienestar de tu compañero en un solo lugar.
 
 ---
 
-## 📋 Tabla de Contenidos
+## Tabla de Contenidos
 
 - [Descripción General](#-descripción-general)
 - [Arquitectura del Proyecto](#-arquitectura-del-proyecto)
@@ -20,7 +20,7 @@
 
 ---
 
-## 📖 Descripción General
+## Descripción General
 
 **Kloe Care** es una aplicación web de gestión veterinaria y seguimiento de mascotas desarrollada como proyecto universitario. Permite a los dueños de mascotas registrar y consultar toda la información de salud y bienestar de sus animales.
 
@@ -31,7 +31,7 @@ El sistema está compuesto por:
 
 ---
 
-## 🏗 Arquitectura del Proyecto
+## Arquitectura del Proyecto
 
 ```
 ┌─────────────────────────────────┐      ┌────────────────────────────┐
@@ -52,7 +52,7 @@ El sistema está compuesto por:
 
 ---
 
-## 🛠 Tecnologías
+## Tecnologías
 
 ### Backend
 | Tecnología | Versión | Uso |
@@ -85,7 +85,7 @@ El sistema está compuesto por:
 
 ---
 
-## 📁 Estructura del Repositorio
+## Estructura del Repositorio
 
 ```
 kloe-care/                          ← Repositorio raíz (Git)
@@ -129,7 +129,7 @@ kloe-care/                          ← Repositorio raíz (Git)
 
 ---
 
-## ✅ Requisitos Previos
+## Requisitos Previos
 
 Asegúrate de tener instalados los siguientes programas antes de iniciar:
 
@@ -141,7 +141,7 @@ Asegúrate de tener instalados los siguientes programas antes de iniciar:
 
 ---
 
-## ⚙️ Configuración del Entorno
+## Configuración del Entorno
 
 ### 1. Clonar el repositorio
 
@@ -179,11 +179,11 @@ NEXT_PUBLIC_SUPABASE_URL=https://<tu-proyecto>.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_<tu-key>
 ```
 
-> ⚠️ **No subas** `.env.local` al repositorio. Ya está en `.gitignore`.
+> **No subas** `.env.local` al repositorio. Ya está en `.gitignore`.
 
 ---
 
-## 🚀 Ejecución del Proyecto
+## Ejecución del Proyecto
 
 El proyecto requiere **dos terminales** corriendo simultáneamente.
 
@@ -219,7 +219,7 @@ La ruta raíz (`/`) redirige automáticamente a `/login`.
 
 ---
 
-## 🔌 API REST — Endpoints
+## API REST — Endpoints
 
 El backend corre en `http://localhost:8080`.
 
@@ -332,7 +332,7 @@ vaccines              medications           wellness_histories
 
 ---
 
-## ✨ Funcionalidades Implementadas
+## Funcionalidades Implementadas
 
 - [x] **RF1** — Registro de usuarios con contraseña hasheada (BCrypt)
 - [x] **RF2** — Registro de mascotas con asociación a propietario
@@ -348,7 +348,7 @@ vaccines              medications           wellness_histories
 
 ---
 
-## 👥 Autores
+## Autores
 
 Proyecto desarrollado para la asignatura de **Ingeniería de Software** — Universidad.
 
