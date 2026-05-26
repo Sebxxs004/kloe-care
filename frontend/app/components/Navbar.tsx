@@ -56,15 +56,6 @@ const NAV_ITEMS = [
     ),
   },
   {
-    href: '/bienestar',
-    label: 'Bienestar',
-    icon: (active: boolean) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" fill={active ? 'currentColor' : 'none'} />
-      </svg>
-    ),
-  },
-  {
     href: '/perfil',
     label: 'Perfil',
     icon: (active: boolean) => (
