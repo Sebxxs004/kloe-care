@@ -350,6 +350,7 @@ vaccines              medications           wellness_histories
 
 ## Autores
  Sebastian Cano, Oriana Jaimes, Johan Carreño
+ 
 Proyecto desarrollado para la asignatura de **Programacion Web** — Universidad.
 
 > Kloe Care © 2025 — Hecho con 🐾 y mucho amor por las mascotas.
