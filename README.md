@@ -1,6 +1,6 @@
 # Kloe Care
 
-> Plataforma integral de gestión y cuidado de mascotas. Registra la salud, alimentación, vacunas, medicamentos y bienestar de tu compañero en un solo lugar.
+> Plataforma integral de gestión y cuidado de mascotas. Registra la salud, alimentación, vacunas, medicamentos y actividad de tu compañero en un solo lugar.
 
 ---
 
@@ -22,7 +22,7 @@
 
 ## Descripción General
 
-**Kloe Care** es una aplicación web de gestión veterinaria y seguimiento de mascotas desarrollada como proyecto universitario. Permite a los dueños de mascotas registrar y consultar toda la información de salud y bienestar de sus animales.
+**Kloe Care** es una aplicación web de gestión veterinaria y seguimiento de mascotas desarrollada como proyecto universitario. Permite a los dueños de mascotas registrar y consultar toda la información de salud, alimentación, vacunas, medicamentos y actividad de sus animales.
 
 El sistema está compuesto por:
 - Un **backend REST** construido con Spring Boot que expone los datos a través de una API.
@@ -94,11 +94,14 @@ kloe-care/                          ← Repositorio raíz (Git)
     │   ├── app/
     │   │   ├── layout.tsx          ← Layout raíz (fuentes, metadata)
     │   │   ├── page.tsx            ← Redirección a /login
-    │   │   └── login/
-    │   │       ├── page.tsx        ← Página de login
-    │   │       ├── login.css       ← Estilos del login
-    │   │       ├── Preloader.tsx   ← Pantalla de carga animada
-    │   │       └── preloader.css   ← Estilos del preloader
+    │   │   ├── login/              ← Autenticación y registro
+    │   │   ├── dashboard/          ← Vista principal con resumen general
+    │   │   ├── salud/              ← Registro de salud
+    │   │   ├── comida/             ← Registro de alimentación
+    │   │   ├── actividad/          ← Registro de actividad física
+    │   │   ├── historial/          ← Historial de registros
+    │   │   ├── perfil/             ← Perfil de usuario y mascota
+    │   │   └── components/         ← Navbar, guard de sesión e íconos
     │   ├── public/
     │   │   └── images/
     │   │       ├── logo-nobackground.png
@@ -126,6 +129,8 @@ kloe-care/                          ← Repositorio raíz (Git)
     ├── supabase_schema.sql         ← DDL completo de la base de datos
     └── pom.xml                     ← Configuración Maven
 ```
+
+> Nota: el módulo de Bienestar fue eliminado del frontend; el README solo conserva el historial interno que usa el backend como soporte de datos.
 
 ---
 
@@ -286,7 +291,10 @@ El backend corre en `http://localhost:8080`.
 | `PUT` | `/api/activities/{id}` | Actualizar actividad |
 | `DELETE` | `/api/activities/{id}` | Eliminar actividad |
 
-### Historial de Bienestar
+### Historial interno de bienestar
+
+> Este historial sigue existiendo como soporte de datos para relacionar salud, alimentación y actividad, pero ya no se expone como módulo separado en el frontend.
+
 | Método | Endpoint | Descripción |
 |---|---|---|
 | `GET` | `/api/wellness-history` | Listar historiales |
@@ -341,7 +349,7 @@ vaccines              medications           wellness_histories
 - [x] **RF5** — Registros de alimentación
 - [x] Gestión de vacunas y medicamentos
 - [x] Registro de actividades físicas
-- [x] Historial de bienestar por mascota
+- [x] Historial interno de bienestar por mascota para soporte de registros
 - [x] Autenticación por email y contraseña (`POST /auth/login`)
 - [x] Página de login con diseño premium (split layout, animaciones, preloader)
 - [x] Frontend integrado dentro del proyecto Maven
